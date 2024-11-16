@@ -1,0 +1,57 @@
+﻿@model IEnumerable<Plot>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var counter = 1;
+}
+
+<style>
+    .project-description {
+        min-height: 50px !important;
+    }
+</style>
+<br />
+<h3>My Plots</h3>
+<br/>
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+    @if (Model.Count() == 0)
+    {
+        <div class="col">
+            <br /><br />
+            <p>No Associated Plots</p>
+        </div>
+    }
+    else
+    {
+        @foreach (var item in Model)
+        {
+            <div class="col">
+                <div class="card shadow-sm">
+                    <img class="bd-placeholder-img card-img-top" width="100%" height="225" src="~/assets/images/home-image.jpg" />
+                    <div class="card-body">
+                        <p class="card-text">Plot @counter</p>
+                        <p class="card-text"><b>@item.Project.Name, @item.Project.Location.Name</b></p>
+                        <p class="card-text"><b>PL @item.Id - @item.PlotType.Name</b></p>
+                        <p class="card-text project-description">@item.PlotType.Description</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <a asp-controller="Plot" asp-action="MyChoicesExtras" asp-route-id="@item.Id" type="button" class="btn btn-sm btn-outline-secondary">Manage My Plot</a>
+                            </div>
+                            <small class="text-body-secondary">£ @item.PlotType.Amount</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            counter++;
+        }
+    }
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#table-extras').DataTable();
+        SetMenuHighlight("plot-manager");
+
+    });
+
+</script>

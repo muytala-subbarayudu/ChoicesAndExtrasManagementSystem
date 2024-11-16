@@ -1,0 +1,130 @@
+﻿@model List<Plot>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var plotOnwer = Model.FirstOrDefault().AppUser.UserName;
+    var plotsCounter = 1;
+}
+<br />
+<button class="btn btn-sm btn-outline-primary" onclick="history.back()">< Back</button>
+<br />
+<br />
+<h4>Plots of Buyer : @plotOnwer</h4>
+<br/>
+<table id="table-plots">
+    <thead>
+        <tr>
+            <th>No.</th>
+            <th>Home Project</th>
+            <th>Plot</th>
+            <th>Description</th>
+            <th>Options</th>
+        </tr>
+    </thead>
+    <tbody id="plots-body">
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@plotsCounter</td>
+                <td>@item.Project.Name</td>
+                <td>PL @item.Id - @item.PlotType.Name</td>
+                <td>@item.PlotType.Description</td>
+                <td>
+                    <a asp-controller="Admin" asp-action="ChoicesExtras" asp-route-plotid="@item.Id" type="button" class="btn btn-sm btn-outline-primary">Choices & Extras</a>
+                    <a asp-controller="Admin" asp-action="BuyerOrders" asp-route-plotid="@item.Id" type="button" class="btn btn-sm btn-outline-primary">Orders & Invoices</a>
+                    <button class="btn btn-sm btn-outline-primary" onclick="NotifyBuyer('@item.Id')">Notify Buyer</button>
+                </td>
+            </tr>
+            plotsCounter++;
+        }
+    </tbody>
+</table>
+
+<!-- Modal for Add Plot Type -->
+
+<div class="modal fade" id="SendMailModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="SendMailModalTitle">Send Notification</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="ModelClose('SendMail')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" class="form-control" id="titleInputElement" placeholder="Enter title">
+                </div>
+                <div class="form-group">
+                    <label>Message</label>
+                    <textarea class="form-control" id="messageInputElement" placeholder="Enter message"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="spinner-border text-primary" role="status" id="spinner" style="display:none;">
+                    <span class="sr-only"></span>
+                </div>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="ModelClose('SendMail')">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="SendMail()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var currentPlotId = "";
+    function NotifyBuyer(plotid)
+    {
+        currentPlotId = plotid;
+        ModelOpen('SendMail');
+    }
+
+    function SendMail() {
+        var title = $('#titleInputElement').val();
+        var message = $('#messageInputElement').val();
+        $.ajax(
+            {
+                type: "POST",
+                url: "SendNotification",
+                data: {
+                plotid: currentPlotId,
+                    title: title,
+                    message: message
+                },
+                beforeSend: function () {
+                    $('#spinner').show();
+                },
+                success: function (result) {
+                    if (result == true) {
+                        $('#spinner').hide();
+                        ModelClose('SendMail');
+                        Swal.fire(
+                            'Success!',
+                            'Buyer Notified!',
+                            'success'
+                        ).then(function () {
+                            //window.location.href = "/Admin/ManageSubCatalogues/" + catalogueId;
+                        });
+                    }
+                }
+
+            });
+    }
+
+    function ModelOpen(type) {
+        $('#' + type + 'Modal').modal('show');
+    }
+
+    function ModelClose(type) {
+        $('#' + type + 'Modal').modal('hide');
+    }
+
+    $(document).ready(function () {
+        SetMenuHighlight("admin-panel");
+        $('#table-plots').DataTable();
+    });
+</script>
+
+

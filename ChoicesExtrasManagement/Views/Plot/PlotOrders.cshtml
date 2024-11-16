@@ -1,0 +1,105 @@
+﻿@using ChoicesExtrasManagement.ViewModels;
+@model PlotOrderVM
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var counter = 1;
+}
+<style>
+    .offcanvas-backdrop {
+        pointer-events: none !important
+    }
+</style>
+
+<div>
+    <a asp-controller="Plot" asp-action="Index" type="button" class="btn btn-sm btn-outline-primary"> < Back to My Plots</a>&nbsp;&nbsp;&nbsp;
+    <h4 style="display:inline-block;vertical-align:sub;">PL @Model.Plot.Id - @Model.Plot.PlotType.Name of @Model.Plot.Project.Name, @Model.Plot.Project.Location.Name</h4>
+</div>
+
+<hr />
+
+<ul class="nav nav-pills nav-fill bg-light p-4 rounded userNavMenu">
+    @*    <li class="nav-item">
+    <a asp-controller="Plot" asp-action="PlotOverview" asp-route-id="@Model.Plot.Id" class="nav-link">Plot Overview</a>
+    </li>*@
+    <li class="nav-item">
+        <a asp-controller="Plot" asp-action="MyChoicesExtras" asp-route-id="@Model.Plot.Id" class="nav-link">Manage Choices and Extras</a>
+    </li>
+    <li class="nav-item">
+        <a asp-controller="Plot" asp-action="PlotOrders" asp-route-id="@Model.Plot.Id" class="nav-link active">Orders & Invoices</a>
+    </li>
+    <li class="nav-item">
+        <a asp-controller="Plot" asp-action="PlotNotifications" asp-route-id="@Model.Plot.Id" class="nav-link">Notifications</a>
+    </li>
+</ul>
+<br />
+<div class="row" style="padding:10px;">
+    <div id="bodySection" style="height: 60vh; background:white;margin-right:5px;padding:15px;">
+        <br />
+        <br />
+        <table id="table-orders">
+            <thead>
+                <tr>
+                    <th>No. </th>
+                    <th>Transation Reference</th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Invoice</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.SavedExtras)
+                {
+                    <tr>
+                        <td>@counter</td>
+                        <td>@item.TransactionId</td>
+                        <td>@item.Transaction.Date.ToShortDateString()</td>
+                        <td>@item.Transaction.Amount</td>
+                        <td>
+                            <a asp-controller="Plot" asp-action="MyInvoice" asp-route-plotid="@item.Plot.Id" asp-route-transactionid="@item.TransactionId" type="button" class="btn btn-sm btn-outline-primary">View Invoice</a>
+                        </td>
+                    </tr>
+                    counter++;
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    //function AddLocation() {
+    //    var location = $('#locationInputElement').val();
+    //    $.ajax(
+    //        {
+    //            type: "POST",
+    //            url: "AddLocation",
+    //            data: {
+    //                location: location
+    //            },
+    //            success: function (result) {
+    //                if (result == true) {
+    //                    ModelClose('AddLocation');
+    //                    window.location.href = "/Admin/ManageLocations";
+    //                }
+    //            }
+
+    //        });
+    //}
+
+    //function ModelOpen(type) {
+    //    $('#' + type + 'Modal').modal('show');
+    //}
+
+    //function ModelClose(type) {
+    //    $('#' + type + 'Modal').modal('hide');
+    //}
+
+    $(document).ready(function () {
+        $('#table-orders').DataTable();
+        SetMenuHighlight("plot-manager");
+    });
+
+
+</script>

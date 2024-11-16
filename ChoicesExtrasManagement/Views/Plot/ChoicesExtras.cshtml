@@ -1,0 +1,141 @@
+﻿@using ChoicesExtrasManagement.ViewModels;
+@model List<PlotRoomChoiceExtraVM>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    //var plot = Model.FirstOrDefault().Choices.FirstOrDefault();
+}
+
+<br />
+<button class="btn btn-sm btn-outline-primary" onclick="history.back()">< Back</button>
+<br />
+<br />
+<div id="plotChoicesExtras">
+    @foreach (var item in Model)
+    {
+        <div class="row" style="border:1px solid black; padding:15px;margin-bottom:40px;">
+            <div>
+                <h5>@item.PlotTypeRoomMapping.DisplayName</h5>
+            </div>
+            <br />
+            <br />
+            <div class="col-md-4">
+                <h5>Choices</h5>
+                <table class="table table-responsive table-light table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Catalogue</th>
+                            <th>Option Selected</th>
+                        </tr>
+                    </thead>
+                    <tbody id="c-body">
+                        @foreach (var choice in item.Choices)
+                        {
+                            var subOption = choice.SubCatalogues.FirstOrDefault(x => x.Id == choice.SubCatalogueMapped);
+                            <tr>
+                                <td>@choice.Catalogue.Name</td>
+                                @if (subOption == null)
+                                {
+                                    <td></td>
+                                }
+                                else
+                                {
+                                    <td>@subOption.Name</td>
+                                }
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                @if (@item.Choices.Count == 0)
+                {
+                    <p>No choices to display.</p>
+                }
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-6">
+                <h5>Extras</h5>
+                <table class="table table-responsive table-light table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Catalogue</th>
+                            <th>Option Selected</th>
+                            <th>Quantity</th>
+                            <th>Paid</th>
+                            <th>Price Paid</th>
+                        </tr>
+                    </thead>
+                    <tbody id="eo-body">
+                        @foreach (var extra in item.Extras)
+                        {
+                            var subOption = extra.SubCatalogues.FirstOrDefault(x => x.Id == extra.SubCatalogueMapped);
+                            <tr>
+                                <td>@extra.Catalogue.Name</td>
+                                <td>@subOption.Name</td>
+                                @*@if (subOption == null)
+                        {
+                        <td></td>
+                        }
+                        else
+                        {
+                        <td>@subOption.Name</td>
+                        }*@
+                                <td>@extra.SubCatalogueItemCount</td>
+                                @if (@extra.YesOrNo == true)
+                                {
+                                    <td>Yes</td>
+                                }
+                                else
+                                {
+                                    <td>No</td>
+                                }
+                                <td>@extra.PricePaid</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                @if (@item.Extras.Count == 0)
+                {
+                    <p>No extras to display.</p>
+                }
+            </div>
+
+
+        </div>
+
+    }
+    @if (Model.Count == 0)
+    {
+        <p>No Rooms mapped yet!</p>
+    }
+    else
+    {
+        @*<button class="btn btn-sm btn-outline-primary" id = "savePdf" onclick="DownloadPDF()">Save PDF</button>*@
+    }
+</div>
+
+<script type="text/javascript">
+    function DownloadPDF() {
+        var element = document.getElementById('plotChoicesExtras');
+        console.log(element);
+
+        //html2canvas(document.getElementById('plotChoicesExtras'), { scrollY: -window.scrollY }).then(function (canvas) {
+        //    //document.body.appendChild(canvas);
+        //    var img = canvas.toDataURL('image/png');
+
+        //    let pdf = new jsPDF('p', 'px', [1600, 1131]);
+        //    pdf.addImage(img, 'PNG', 15, 15, 1000, 0);
+        //    pdf.save('invoice.pdf');
+        //});
+
+        $('#plotChoicesExtras').printThis();
+
+
+    }
+
+    $(document).ready(function () {
+        SetMenuHighlight("admin-panel");
+
+    });
+</script>

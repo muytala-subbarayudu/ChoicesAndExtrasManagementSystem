@@ -1,0 +1,259 @@
+﻿@model IEnumerable<PlotType>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<style>
+    .disabledOption {
+        opacity: 0.4;
+        pointer-events: none;
+    }
+
+</style>
+<div class="bg-light p-4 rounded row">
+    <div class="col-md-1">
+        <p for="location"><b>Plot Type</b></p>
+    </div>
+    <div class="col-md-2">
+        <select id="location" class="form-control" onchange="LoadRoomsDropdown()">
+            <option value="0" id="0">Select</option>
+            @foreach (var item in Model)
+            {
+                if (item.Id == ViewBag.CurrentPloyType)
+                {
+                    <option value="@item.Id" id="@item.Id" selected>@item.Name</option>
+                }
+                else
+                {
+                    <option value="@item.Id" id="@item.Id">@item.Name</option>
+                }
+
+            }
+        </select>
+    </div>
+    <div class="col-md-1"></div>
+    <div class="col-md-1">
+        <p for="location"><b>Room</b></p>
+    </div>
+    <div class="col-md-2">
+        <select id="room" class="form-control">
+            <option value="0" id="0">Select</option>
+        </select>
+    </div>
+    <div class="col-md-1"></div>
+    <div class="col-md-2">
+        <button class="btn btn-primary" onclick="LoadChoicesExtras()">Submit</button>
+    </div>
+</div>
+<br />
+
+<div class="row">
+    <div id="choicesExtrasSection" style="height:60vh; background:white;margin-right:5px;padding:15px;">
+
+        <div style="height: 50vh;" id="choicesDiv">
+            <table id="table-choicesExtras">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Catalogue</th>
+                        <th>Mapped to Room</th>
+                        <th>Choice or Extra</th>
+                    </tr>
+                </thead>
+                <tbody id="choicesExtras-body">
+                </tbody>
+            </table>
+        </div>
+        <div style="margin-bottom: 20px;">
+            <button type="button" class="btn btn-primary" style="display:inline;float:right;" onclick="SaveChoicesExtras()">Save Changes</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    var ChoicesExtrasResult = [];
+    var changesTrigger = 0;
+
+    function LoadRoomsDropdown() {
+        var plotTypeId = $('#location').val();
+        $.ajax(
+            {
+                type: "GET",
+                url: "GetAllRoomsByPlotType",
+                data: {
+                    plotType: plotTypeId
+                },
+                success: function (result) {
+                    console.log(result);
+                    if (result != null) {
+                        var options = '<option value="0" id="0">Select</option>';
+                        for (let item of result) {
+                            options += '<option value=' + item.id + '>' + item.name + '</option>';
+                        }
+                        $('#room').html(options);
+                    }
+                }
+
+            });
+    }
+
+    function LoadChoicesExtras() {
+        var plotTypeId = $('#location').val();
+        var roomId = $('#room').val();
+
+        if (plotTypeId == 0 || roomId == 0) {
+            // alert('Please select both Plot Type and Room !');
+            Swal.fire(
+                'Alert!',
+                'Please select both Plot Type and Room!',
+                'warning'
+            );
+        }
+        else {
+            $.ajax(
+                {
+                    type: "GET",
+                    url: "GetAllChoiceExtrasMappings",
+                    cache: false,
+                    async: false,
+                    data: {
+                        plotType: plotTypeId, roomId: roomId
+                    },
+                    success: function (result) {
+                        console.log(result);
+                        let catalogueCounter = 1;
+                        if (result != null) {
+                            $('#table-choicesExtras').DataTable().destroy();
+
+                            var tableBody = '';
+                            for (let item of result) {
+                                let isActiveChecked = (item.isActive == true) ? 'checked' : '';
+                                var choiceClass = (item.choiceOrExtra == false) ? 'btn-success' : 'btn-light';
+                                var extraClass = (item.choiceOrExtra == true) ? 'btn-success' : 'btn-light';
+                                var isChoiceExtraVisible = (item.isActive == false) ? '' : '';//disabledOption -> true
+                                var choiceOrExtraElement = '<div id="ceDiv_' + item.catalogueId + '" class="btn-group btn-toggle mb-2 ' + isChoiceExtraVisible + '"> <button id="choice_' + item.catalogueId + '" class="btn btn-xs ' + choiceClass + '" onClick = "StoreIsChoice(' + item.catalogueId + ')"> Choice</button><button id="extra_' + item.catalogueId + '" class="btn btn-xs ' + extraClass + '" onClick = "StoreIsExtra(' + item.catalogueId + ')">Extra</button></div>';
+                                let isActiveElement = '<div class="form-check form-switch"><input class="form-check-input" type = "checkbox" role = "switch" id = "isActive_' + item.catalogueId + '"' + isActiveChecked + ' onChange = "StoreIsActive(' + item.catalogueId + ')" ></div>';
+                                let tableRow = '<tr><td>' + catalogueCounter + '</td><td>' + item.catalogueName + '</td><td>' + isActiveElement + '</td><td>' + choiceOrExtraElement + '</td></tr>';
+                                tableBody += tableRow;
+                                catalogueCounter++;
+                            }
+                            $('#choicesExtras-body').html(tableBody);
+
+                            $('#table-choicesExtras').DataTable({
+                                pageLength: 8,
+                                paging: false,
+                                scrollCollapse: true,
+                                scrollY: '35vh'
+                            });
+                            ChoicesExtrasResult = result;
+                        }
+                    }
+
+                });
+        }
+    }
+
+    function SaveChoicesExtras() {
+        var sendResult = [];
+        var plotTypeId = $('#location').val();
+        var roomId = $('#room').val();
+
+
+        sendResult = JSON.stringify(ChoicesExtrasResult);
+
+        if (changesTrigger == 0) {
+            Swal.fire(
+                'Alet!',
+                'No Changes!',
+                'warning'
+            ).then(function () {
+                // window.location.href = "/Admin/ViewBuyers";
+            });
+        }
+        else {
+            $.ajax(
+                {
+                    type: "POST",
+                    url: "SaveChoicesExtras",
+                    type: "string",
+                    data: {
+                        jsonResult: sendResult, plotType: plotTypeId, roomId: roomId
+                    },
+                    success: function (result) {
+                        if (result == true) {
+                            sendResult = [];
+                            Swal.fire(
+                                'Success!',
+                                'Saved Changes!',
+                                'success'
+                            ).then(function () {
+                                changesTrigger = 0;
+                                $.ajax(
+                                    {
+                                        type: "POST",
+                                        url: "NotifyPlotBuyers",
+                                        data: {
+                                            plotTypeId: plotTypeId
+                                        }
+
+                                    });
+                            });
+                        }
+                    }
+
+                });
+        }
+
+
+    } // Change Later
+
+    function StoreIsActive(id) {
+        changesTrigger = 1;
+        var checked = $("input[id='isActive_" + id + "']:checked").val();
+        let existingRecord = ChoicesExtrasResult.find((i => i.catalogueId == id));
+        existingRecord.isActive = (checked == "on") ? true : false;
+        //if(checked == "on"){
+        //    $('#ceDiv_' + id).removeClass('disabledOption');
+        //}
+        //else{
+        //    $('#ceDiv_' + id).addClass('disabledOption');
+        //}
+    }
+
+    function StoreIsChoice(id) {
+        changesTrigger = 1;
+        let existingRecord = ChoicesExtrasResult.find((i => i.catalogueId == id));
+        existingRecord.choiceOrExtra = false;
+        $('#choice_' + id).removeClass('btn-light');
+        $('#choice_' + id).addClass('btn-success');
+        $('#extra_' + id).removeClass('btn-success');
+        $('#extra_' + id).addClass('btn-light');
+    }
+
+    function StoreIsExtra(id) {
+        changesTrigger = 1;
+        let existingRecord = ChoicesExtrasResult.find((i => i.catalogueId == id));
+        existingRecord.choiceOrExtra = true;
+        $('#choice_' + id).addClass('btn-light');
+        $('#choice_' + id).removeClass('btn-success');
+        $('#extra_' + id).addClass('btn-success');
+        $('#extra_' + id).removeClass('btn-light');
+    }
+
+    $(document).ready(function () {
+        $('#table-choicesExtras').DataTable({
+            paging: false,
+            scrollCollapse: true,
+            scrollY: '35vh'
+
+        });
+        SetMenuHighlight("admin-panel");
+        var plotTypeId = $('#location').val();
+        if (plotTypeId != 0) {
+            LoadRoomsDropdown();
+        }
+
+
+    });
+</script>

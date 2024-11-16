@@ -1,0 +1,41 @@
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+    background-color: #9e73f238;
+    overflow-y: scroll;
+}
+
+.navMenu {
+    justify-content: flex-end;
+}
+
+    .navMenu .nav-link {
+        color: #3C096C !important;
+        font-weight: 500;
+    }
+
+    .navMenu .nav-item {
+        padding: 0px 10px;
+    }
+
+.bodyDiv {
+    margin-top: 0px !important;
+}
+
+body {
+    font: 'Segoe UI' !important;
+}

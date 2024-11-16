@@ -1,0 +1,44 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<style>
+
+</style>
+<div class="landingDiv">
+    <div class="px-4 text-center">
+        <img src="~/assets/images/Modern Buidler - Homepage.png" height="280" width="280" />
+        <h1 class="display-5 fw-bold">Modern Homes Limited</h1> 
+        <div class="col-lg-6 mx-auto">
+            <p class="lead mb-4">
+                Dynamic and creative home builder dedicated to producing modern living places that redefine comfort and style.
+                We deliver great home projects that meet the changing needs of our cherished customers with an emphasis on high-caliber craftsmanship and innovative design.
+            </p>
+            @*<div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                @if (!User.Identity.IsAuthenticated)
+                {
+                    <button type="button" class="btn btn-primary btn-lg px-4 gap-3" id="loginScreen">Login</button>
+                }
+                
+                <button type="button" class="btn btn-primary btn-lg px-4 gap-3" id="ViewMyPlot">View My Plots</button>
+                <button type="button" class="btn btn-outline-secondary btn-lg px-4" id="ViewAllProjects">View All Projects</button>
+            </div>*@
+        </div>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#ViewMyPlot').on('click',function(e){
+            window.location.href="/Plot/";
+        });
+        $('#ViewAllProjects').on('click', function (e) {
+            window.location.href = "/Project/";
+        });
+        $('#loginScreen').on('click', function (e) {
+            window.location.href = "/Account/Login";
+        });
+        
+        SetMenuHighlight("home");
+    });
+</script>

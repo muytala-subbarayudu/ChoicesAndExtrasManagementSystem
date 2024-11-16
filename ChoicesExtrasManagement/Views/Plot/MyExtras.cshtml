@@ -1,0 +1,398 @@
+﻿@using ChoicesExtrasManagement.ViewModels;
+@model ExtrasDisplayVM
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var allExtrasMapped = Html.Raw(Json.Serialize(@Model.AllExtrasMappedList));
+    var allExtrasPurchased = Html.Raw(Json.Serialize(@Model.ExtrasPurchasedList));
+    var allExtrasToBePurchased = Html.Raw(Json.Serialize(@Model.ExtrasToBePurchasedList));
+    var plotRoomId = Html.Raw(Json.Serialize(@Model.PlotTypeRoomMapping.Id));
+    var plotId = Html.Raw(Json.Serialize(@Model.Plot.Id));
+}
+<style>
+    thead tr th:first-child,
+    tbody tr td:first-child {
+        width: 20em;
+        min-width: 20em;
+        max-width: 20em;
+        word-break: break-all;
+    }
+
+    .descriptionText {
+        font-size: 14px !important;
+        font-weight: 400 !important;
+        margin-top: 10px;
+        font-style: italic;
+    }
+
+    span.price {
+        font-weight: 600;
+        color: green;
+    }
+
+    .quantity {
+        max-width: 70px !important;
+    }
+</style>
+<br />
+<button class="btn btn-sm btn-outline-primary" onclick="history.back()">< Back</button>
+<br />
+<br />
+<h5>Extras for @Model.PlotTypeRoomMapping.DisplayName</h5>
+<br />
+<div style="min-height:40vh; border:1px solid black; padding:15px;">
+    <h6>Orders Placed</h6>
+    <br />
+    <table id="table-mychoices" class="table table-responsive table-light table-bordered">
+        <thead>
+            <tr>
+                <th>Catalogue</th>
+                <th>Extra Selected</th>
+                <th>Quantity</th>
+                <th>Price Paid</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.ExtrasPurchasedList.Count() > 0)
+            {
+                @foreach (var item in Model.ExtrasPurchasedList)
+                {
+                    var price = @item.SubCatalogues.FirstOrDefault(x => x.Id == item.SubCatalogueMapped).Price * @item.SubCatalogueItemCount;
+                    <tr>
+                        <td>@item.Catalogue.Name</td>
+                        <td>@item.SubCatalogues.FirstOrDefault(x=>x.Id == item.SubCatalogueMapped).Name</td>
+                        <td>@item.SubCatalogueItemCount</td>
+                        <td>@item.PricePaid</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    @if (Model.ExtrasPurchasedList.Count() == 0)
+    {
+        <p>No records to show.</p>
+    }
+</div>
+
+<br />
+<br />
+
+<div style="min-height:40vh; border:1px solid black; padding:15px;">
+    <h6 class="inlineElement">Yet to Order</h6>
+    <button class="btn btn-sm btn-outline-primary floatRight" onclick="AddExtra()">Add Extra Item</button>
+    <br />
+    <br />
+    <table id="table-mychoices" class="table table-responsive table-light table-bordered">
+        <thead>
+            <tr>
+                <th>Catalogue</th>
+                <th>Extra Selected</th>
+                <th>Quantity</th>
+                <th>Price to Pay</th>
+                <th>Options</th>
+            </tr>
+        </thead>
+        <tbody id="tobe-body">
+            @*@if (Model.AllExtrasMappedList.Count() > 0)
+            {
+            @foreach (var item in Model.AllExtrasMappedList)
+            {
+            <tr>
+            <td><b>@item.Catalogue.Name</b>
+            <p class="descriptionText">
+            @item.Catalogue.Description <br /><br /> Multiple : @item.SingleOrMultipleDisplayText
+            </p>
+            </td>
+            <td>
+            <p></p>
+            <div style="margin:5px 0px;">
+            @foreach (var subItem in item.SubCatalogues)
+            {
+            if (subItem.Id == item.SubCatalogueMapped)
+            {
+            <div class="form-check" style="margin:5px">
+            <input class="form-check-input" type="radio" name="radioset_@subItem.CatalogueId" id="radio_@subItem.Id" value="@subItem.CatalogueId-@subItem.Id-@subItem.Price" checked>
+            <label class="form-check-label" for="radio_@subItem.Id">
+            @subItem.Name - <span class="price">£ @subItem.Price</span>
+            </label>
+            </div>
+            }
+            else
+            {
+            <div class="form-check" style="margin:5px">
+            <input class="form-check-input" type="radio" name="radioset_@subItem.CatalogueId" id="radio_@subItem.Id" value="@subItem.CatalogueId-@subItem.Id-@subItem.Price">
+            <label class="form-check-label" for="radio_@subItem.Id">
+            @subItem.Name - £ <span class="price">@subItem.Price</span>
+            </label>
+            </div>
+            }
+
+            }
+            </div>
+            </td>
+            <td>
+            @if (item.SubCatalogueItemCount != null)
+            {
+            <input type="number" class="quantity" id="qty_@item.Catalogue.Id" name="quantity" min="1" max="" value="@item.SubCatalogueItemCount" />
+            }
+            else
+            {
+
+            <input type="number" class="quantity" id="qty_@item.Catalogue.Id" name="quantity" min="1" max="" value="1" />
+
+            }
+            </td>
+            <td><label id="DiplayPrice_@item.Catalogue.Id">-</label></td>
+            <td>
+            <a type="button" class="btn btn-sm btn-outline-primary">Remove</a>
+            </td>
+
+            </tr>
+            }
+            }*@
+        </tbody>
+    </table>
+    <p id="noRecords"></p>
+    <button class="btn btn-primary" onclick="SaveExtras()">Save Changes</button>
+</div>
+
+<!-- Modal for Add Extras -->
+
+<div class="modal fade" id="AddExtraModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="AddExtraModalTitle">Add Extra</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="ModelClose('AddExtra')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Extra</label>
+                    <select class="form-control" id="extraSelectElement" placeholder="Select Extra">
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Options</label>
+                    <select class="form-control" id="subExtraSelectElement" placeholder="Select Option">
+                    </select>
+                </div>
+                <div>
+                    <br />
+                    <p id="displayNote"></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="ModelClose('AddExtra')">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="AddExtraItem()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var allExtrasList = @allExtrasMapped;
+    var extrasTobePurchasedList = @allExtrasToBePurchased;
+
+    //$("input[id^=radio_]").change(function () {
+    //    let value = $(this).val().split('-');
+    //    let qty = parseFloat($('#qty_' + value[0]).val());
+    //    let price = parseFloat(value[2]);
+    //    $('#DiplayPrice_' + value[0]).text(qty * price);
+
+    //    var existingRow = extrasTobePurchasedList.find(x => x.catalogue.id == value[0]);
+
+    //});
+
+
+
+    function LoadExtraDropdown() {
+        //var filteredList = allExtrasList.filter(x => x.isDisplayed == false);
+        var options = '<option value=0>Select</option>';
+        for (let item of allExtrasList) {
+            if (item.isDisplayed == false) {
+                options += '<option value=' + item.catalogue.id + '>' + item.catalogue.name + '</option>';
+            }
+            else {
+                options += '<option value=' + item.catalogue.id + ' disabled >' + item.catalogue.name + ' - Multiple not allowed.</option>';
+            }
+        }
+        console.log(options);
+        $('#extraSelectElement').html(options);
+        $('#subExtraSelectElement').html('');
+        $('#displayNote').html('');
+    }
+
+    function LoadSubExtraDropdown(extraId) {
+        var options = '';
+        $('#subExtraSelectElement').html(options);
+        var filteredItem = allExtrasList.find(x => x.catalogue.id == extraId);
+        var subList = filteredItem.subCatalogues;
+        var options = '';
+        for (let item of subList) {
+
+            options += '<option value=' + item.id + '>' + item.name + ' - £ ' + item.price + '</option>';
+        }
+        console.log(options);
+        $('#subExtraSelectElement').html(options);
+
+        if (filteredItem.catalogue.singleOrMultiple == false) {
+            $('#displayNote').html('Note: This item is of single quantity type');
+        }
+        else{
+            $('#displayNote').html('');
+        }
+    }
+
+    function AddExtra() {
+        ModelOpen('AddExtra');
+        LoadExtraDropdown();
+    }
+
+    function LoadDisplayExtrasToBePaid() {
+        if (extrasTobePurchasedList.length == 0) {
+            var tableBody = '';
+            $('#tobe-body').html(tableBody);
+            $('#noRecords').html('No items to display');
+        }
+        else {
+            var tableBody = ''
+            for (let item of extrasTobePurchasedList) {
+                var subItem = item.subCatalogues.find(x => x.id == item.subCatalogueMapped);
+
+                tableBody += '<tr>';
+                tableBody += '<td>' + item.catalogue.name + '</td>';
+                tableBody += '<td>' + subItem.name + '</td>';
+                if (item.catalogue.singleOrMultiple == true) {
+                    tableBody += '<td><input type="number" class="quantity" id="qty_' + item.catalogue.id + '_' + item.subCatalogueMapped + '" name="quantity" min="1" max="" value="' + item.subCatalogueItemCount + '"/> </td>';
+
+                }
+                else {
+                    tableBody += '<td>1</td>';
+                }
+                tableBody += '<td><label id="DiplayPrice_' + item.catalogue.id + '_' + item.subCatalogueMapped + '">' + (parseFloat(item.subCatalogueItemCount) * parseFloat(subItem.price)) + '</label></td>';
+                tableBody += '<td> <button class="btn btn-sm btn-outline-primary" onclick="RemoveTobeExtra(\'' + item.catalogue.id + '\' ,\'' + item.subCatalogueMapped + '\')">Remove</button></td>';
+                tableBody += '</tr>';
+
+
+            }
+            $('#tobe-body').html(tableBody);
+            $('#noRecords').html('');
+        }
+
+        $("input[id^=qty_]").change(function () {
+            debugger;
+            let qty = parseFloat($(this).val());
+            let currentCatalogue = $(this).attr('id').split('_')[1];
+            let currentSubCatalogue = $(this).attr('id').split('_')[2];
+            let currentItem = extrasTobePurchasedList.find(x => x.catalogue.id == currentCatalogue);
+            let price = parseFloat(currentItem.subCatalogues.find(x => x.id == currentSubCatalogue).price);
+            $('#DiplayPrice_' + currentCatalogue + '_' + currentSubCatalogue).text(qty * price);
+
+            var existingRow = extrasTobePurchasedList.find(x => x.catalogue.id == currentCatalogue && x.subCatalogueMapped == currentSubCatalogue);
+            existingRow.subCatalogueItemCount = qty;
+            console.log(extrasTobePurchasedList);
+        });
+
+    }
+
+    function AddExtraItem() {
+
+        var extra = $('#extraSelectElement').val();
+        var subextra = $('#subExtraSelectElement').val();
+        var existingRow = allExtrasList.find(x => x.catalogue.id == extra);
+        var existingLine = extrasTobePurchasedList.find(x => x.catalogue.id == extra && x.subCatalogueMapped == subextra);
+
+        if (existingRow.catalogue.singleOrMultiple == false) {
+            existingRow.isDisplayed = true;
+        }
+
+        if (existingLine != undefined) {
+            existingLine.subCatalogueItemCount = parseInt(existingLine.subCatalogueItemCount) + 1;
+
+        } else {
+            var currentRow = existingRow;
+            //currentRow.subCatalogueMapped = subextra;
+            //currentRow.subCatalogueItemCount = parseInt('1');
+            //currentRow.isDisplayed = existingRow.isDisplayed;
+            extrasTobePurchasedList.push({
+                catalogue: existingRow.catalogue,
+                subCatalogues: existingRow.subCatalogues,
+                isDisplayed: existingRow.isDisplayed,
+                singleOrMultipleDisplayText: existingRow.singleOrMultipleDisplayText,
+                subCatalogueMapped: subextra,
+                subCatalogueItemCount: parseInt('1')
+            });
+        }
+
+        console.log(extrasTobePurchasedList);
+
+        ModelClose('AddExtra');
+
+        LoadDisplayExtrasToBePaid();
+    }
+
+    $("#extraSelectElement").change(function () {
+        var val = $(this).val();
+        LoadSubExtraDropdown(val);
+    });
+
+    function ModelOpen(type) {
+        $('#' + type + 'Modal').modal('show');
+    }
+
+    function ModelClose(type) {
+        $('#' + type + 'Modal').modal('hide');
+    }
+
+    function RemoveTobeExtra(extra, subextra) {
+        extrasTobePurchasedList = extrasTobePurchasedList.filter(function (item) {
+            return item.subCatalogueMapped != subextra
+        });
+
+        var existingRow = allExtrasList.find(x => x.catalogue.id == extra);
+        console.log(existingRow);
+        if (existingRow.catalogue.singleOrMultiple == false) {
+            existingRow.isDisplayed = false;
+        }
+
+        LoadDisplayExtrasToBePaid();
+
+    }
+
+    function SaveExtras() {
+        var sendResult = [];
+        sendResult = JSON.stringify(extrasTobePurchasedList);
+
+        $.ajax(
+            {
+                type: "POST",
+                url: "SaveExtras",
+                type: "string",
+                data: {
+                    jsonResult: sendResult, plotRoomId: @plotRoomId, plotId: @plotId
+                        },
+                success: function (result) {
+                    if (result == true) {
+                        extrasTobePurchasedList = [];
+                        //alert('Saved!');
+                        Swal.fire(
+                            'Success!',
+                            'Saved Changes!',
+                            'success'
+                        );
+                    }
+                }
+
+            });
+
+
+    } // Change Later
+
+    $(document).ready(function () {
+        SetMenuHighlight("plot-manager");
+        LoadDisplayExtrasToBePaid();
+    });
+</script>

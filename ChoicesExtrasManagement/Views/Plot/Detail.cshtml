@@ -1,0 +1,94 @@
+﻿@using ChoicesExtrasManagement.ViewModels;
+@model PlotsRoomViewModel
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<div class="container">
+
+    <!-- Portfolio Item Heading -->
+    <h3 class="my-4">
+       @Model.Name - @Model.ProjectName
+    </h3>
+
+    <!-- Portfolio Item Row -->
+    <div class="row">
+
+        <div class="col-md-4">
+            <img src="~/assets/images/home-image.jpg" width="100%" height="225" alt="">
+        </div>
+
+        <div class="col-md-4">
+            <h5 class="my-3">Description</h5>
+            <p>@Model.Description</p>
+            <h5 class="my-3">Plot Type</h5>
+            <p> PL @Model.PlotId - @Model.Name</p>
+            <h5 class="my-3">Price</h5>
+            <p>@Model.Amount</p>
+        </div>
+
+    </div>
+    <!-- /.row -->
+    <!-- Related Projects Row -->
+    <h4 class="my-4">Associated Rooms</h4>
+    @if(Model.RoomMappingLists.Count() > 0)
+    {
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-3">
+            
+                @foreach (var item in Model.RoomMappingLists)
+                {
+                <div class="col d-flex align-items-start">
+                    <div>
+                    <h5 class="fw-bold mb-0">@item.room.Name X @item.count</h5>
+                    <p>@item.room.Description</p>
+                    </div>
+                </div>
+                }
+            
+            </div>
+    }
+    else
+    {
+        <p>No Rooms associated yet.</p>
+    }
+    
+
+  
+        @*<div class="col d-flex align-items-start">
+            <div>
+                <h5 class="fw-bold mb-0">Bed Room X 2</h5>
+                <p>Paragraph of text beneath the heading to explain the heading.</p>
+            </div>
+        </div>
+        <div class="col d-flex align-items-start">
+            <div>
+                <h5 class="fw-bold mb-0">Kitchen X 1</h5>
+                <p>Paragraph of text beneath the heading to explain the heading.</p>
+            </div>
+        </div>
+        <div class="col d-flex align-items-start">
+            <div>
+                <h5 class="fw-bold mb-0">Bathroom x 2</h5>
+                <p>Paragraph of text beneath the heading to explain the heading.</p>
+            </div>
+        </div>
+        <div class="col d-flex align-items-start">
+            <div>
+                <h5 class="fw-bold mb-0">Living Room X 1</h5>
+                <p>Paragraph of text beneath the heading to explain the heading.</p>
+            </div>
+        </div>
+    </div>*@
+    <!-- /.row -->
+
+</div>
+<!-- /.container -->
+
+<script>
+    $(document).ready(function () {
+        SetMenuHighlight("all-projects");
+    });
+</script>
+

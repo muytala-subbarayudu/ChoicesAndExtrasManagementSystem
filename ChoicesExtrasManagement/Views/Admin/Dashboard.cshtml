@@ -1,0 +1,139 @@
+﻿@using ChoicesExtrasManagement.ViewModels;
+@model DashboardVM
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var unsold = Model.UnSoldCount;
+    var sold = Model.SoldCount;
+    var locationsList = Html.Raw(Json.Serialize(Model.LocationPlotsVM));
+}
+
+<style>
+    .card {
+        background-color: #fafafa;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+        transition: transform 0.2s ease-in-out;
+        cursor: pointer;
+    }
+
+    p.lead {
+        margin-bottom: 0px !important;
+    }
+</style>
+<br />
+<button class="btn btn-sm btn-outline-primary" onclick="history.back()">< Back</button>
+<br />
+<br />
+<h4>Admin Dashboard</h4>
+<br />
+<div class="row">
+    <div class="col-md-3">
+        <div class="p-2 text-center bg-body-tertiary rounded-3 card">
+            <h5 class="text-body-emphasis">Home Projects</h5>
+            <p class="lead">
+                @Model.ProjectsCount
+            </p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="p-2 text-center bg-body-tertiary rounded-3 card">
+            <h5 class="text-body-emphasis">Plots</h5>
+            <p class="lead">
+                @Model.PlotsCount
+            </p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="p-2 text-center bg-body-tertiary rounded-3 card">
+            <h5 class="text-body-emphasis">Buyers</h5>
+            <p class="lead">
+                @Model.BuyersCount
+            </p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="p-2 text-center bg-body-tertiary rounded-3 card">
+            <h5 class="text-body-emphasis">Catalogues</h5>
+            <p class="lead">
+                @Model.CatalogueCount
+            </p>
+        </div>
+    </div>
+
+</div>
+<br />
+<div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-4">
+        <div style="width:400px; height:400px;">
+            <canvas id="soldPlots"></canvas>
+        </div>
+    </div>
+    <div class="col-md-2"></div>
+    <div class="col-md-4">
+        <div style="width:400px; height:400px;">
+            <canvas id="locations"></canvas>
+        </div>
+    </div>
+    <div class="col-md-1"></div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script type="text/javascript">
+    var ctx = document.getElementById("soldPlots").getContext('2d');
+
+    var myChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ["Sold Out", "Available"],
+            datasets: [{
+                data: [@sold, @unsold]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    position: "right",
+                    align: "middle"
+                }
+            },
+        }
+    });
+
+    var ctx = document.getElementById("locations").getContext('2d');
+
+    var locationsList = @locationsList;
+    var loactionLabels = locationsList.map(a => a.name);
+    var loactionCounts = locationsList.map(a => a.count);
+
+    var myChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: loactionLabels,
+            datasets: [{
+                data: loactionCounts
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    position: "right",
+                    align: "middle"
+                }
+            },
+        }
+    });
+
+    $(document).ready(function () {
+        SetMenuHighlight("admin-panel");
+    });
+</script>

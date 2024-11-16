@@ -1,0 +1,109 @@
+﻿@using ChoicesExtrasManagement.ViewModels;
+@model IEnumerable<CatalogueViewModel>
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var counter = 1;
+}
+
+<h3 id="plot-heading" class="inlineElement">Manage Choices Catalogue</h3>
+<button type="button" class="btn btn-primary inlineElement floatRight" onclick="ModelOpen('AddChoice')">Add Choice</button>
+<br />
+<br />
+<table id="table-choices">
+    <thead>
+        <tr>
+            <th>No.</th>
+            <th>Name</th>
+            <th>Description</th>
+@*            <th>Mapped to Rooms</th>*@
+            <th>Sub Choices Count</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@counter</td>
+                <td>@item.Name</td>
+                <td>@item.Description</td>
+                @*<td>@item.RoomMappingDetails</td>*@
+                <td>@item.SubCatalogueItems.Count()</td>
+                <td>
+                    <a asp-controller="Admin" asp-action="ManageSubChoices" asp-route-id="@item.Id" type="button" class="btn btn-sm btn-outline-primary">View Sub Choices</a>
+               </td>
+            </tr>
+            counter++;
+        }
+    </tbody>
+</table>
+
+<!-- Modal for Add Choice -->
+<div class="modal fade" id="AddChoiceModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="AddChoiceModalTitle">Add Choice</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="ModelClose('AddChoice')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                 <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" class="form-control" id="choiceNameInputElement" placeholder="Enter name">
+                </div>
+                 <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" class="form-control" id="choiceDescriptionInputElement" placeholder="Enter description">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="ModelClose('AddChoice')">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="AddChoice()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function AddChoice() {
+        var choiceName = $('#choiceNameInputElement').val();
+        var choiceDescription = $('#choiceDescriptionInputElement').val();
+
+        $.ajax({
+                type: "POST",
+                url: "AddChoice",
+                data: {
+                    choiceName: choiceName,
+                    choiceDescription: choiceDescription,
+                },
+                success: function (result) {
+                    if (result == true) {
+                        ModelClose('AddChoice');
+                        window.location.href = "/Admin/ManageChoices";
+                    }
+                }
+
+            });
+    }
+
+    function ModelOpen(type) {
+        $('#' + type + 'Modal').modal('show');
+    }
+
+    function ModelClose(type) {
+        $('#' + type + 'Modal').modal('hide');
+    }
+
+    $(document).ready(function () {
+        $('#table-choices').DataTable();
+        SetMenuHighlight("admin-panel");
+
+    });
+
+</script>

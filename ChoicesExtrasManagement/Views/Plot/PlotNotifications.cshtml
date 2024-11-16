@@ -1,0 +1,150 @@
+﻿@using ChoicesExtrasManagement.ViewModels;
+@model NotificationVM
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var counter = 1;
+    var plotid = Model.Plot.Id;
+}
+<style>
+    .offcanvas-backdrop {
+        pointer-events: none !important
+    }
+</style>
+
+<div>
+    <a asp-controller="Plot" asp-action="Index" type="button" class="btn btn-sm btn-outline-primary"> < Back to My Plots</a>&nbsp;&nbsp;&nbsp;
+    <h4 style="display:inline-block;vertical-align:sub;">PL @Model.Plot.Id - @Model.Plot.PlotType.Name of @Model.Plot.Project.Name, @Model.Plot.Project.Location.Name</h4>
+</div>
+<hr />
+
+<ul class="nav nav-pills nav-fill bg-light p-4 rounded userNavMenu">
+    @*    <li class="nav-item">
+    <a asp-controller="Plot" asp-action="PlotOverview" asp-route-id="@Model.Plot.Id" class="nav-link">Plot Overview</a>
+    </li>*@
+    <li class="nav-item">
+        <a asp-controller="Plot" asp-action="MyChoicesExtras" asp-route-id="@Model.Plot.Id" class="nav-link">Manage Choices and Extras</a>
+    </li>
+    <li class="nav-item">
+        <a asp-controller="Plot" asp-action="PlotOrders" asp-route-id="@Model.Plot.Id" class="nav-link">Orders & Invoices</a>
+    </li>
+    <li class="nav-item">
+        <a asp-controller="Plot" asp-action="PlotNotifications" asp-route-id="@Model.Plot.Id" class="nav-link active">Notifications</a>
+    </li>
+</ul>
+<br />
+<div class="row" style="padding:10px;">
+
+    <div id="bodySection" style=" background:white;margin-right:5px;padding:15px;">
+        <br />
+        <button type="button" class="btn btn-sm btn-outline-primary inlineElement floatRight" onclick="ModelOpen('SendMail')">Feedback / Suggesstion </button>
+        <br />
+        <br />
+        <br />
+        <table id="table-notifications">
+            <thead>
+                <tr>
+                    <th>No. </th>
+                    <th>Notification</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+               @* <tr>
+                    <td>@counter</td>
+                    <td>
+                        <div>
+                            <h5>Title</h5>
+                            <p>Message</p>
+                        </div>
+                    </td>
+                    <td>MessageDate.Value.ToShortDateString()</td>
+                </tr>*@
+                @foreach (var item in Model.NotificationsList)
+                {
+                    <tr>
+                        <td>@counter</td>
+                        <td>
+                            <div>
+                                <h5>@item.Title</h5>
+                                <p>@item.Message</p>
+                            </div>
+                        </td>
+                        <td>@item.MessageDate.Value.ToShortDateString()</td>
+                    </tr>
+                    counter++;
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal for Add Location -->
+
+<div class="modal fade" id="SendMailModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="SendMailModalTitle">Send Message</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="ModelClose('SendMail')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Message</label>
+                    <textarea rows="4" cols="50"  class="form-control" id="messageInputElement" placeholder="Enter Message"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="ModelClose('SendMail')">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="SendMail()">Send</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+   
+    function SendMail(){
+        var message = $('#messageInputElement').val();
+        var plotid = @plotid;
+        $.ajax(
+            {
+                type: "POST",
+                url: '@Url.Action("SendFeedbackEmail","Plot")',
+                data: {
+                    plotid: plotid , message: message
+                },
+                success: function (result) {
+                    if (result == true) {
+                        ModelClose('SendMail');
+                        Swal.fire(
+                            'Success!',
+                            'Feedback / Suggesstion - Message Sent!',
+                            'success'
+                        )
+                        
+                    }
+                }
+
+            });
+    }
+
+    function ModelOpen(type) {
+        $('#' + type + 'Modal').modal('show');
+    }
+
+    function ModelClose(type) {
+        $('#' + type + 'Modal').modal('hide');
+    }
+
+    $(document).ready(function () {
+        $('#table-notifications').DataTable();
+        SetMenuHighlight("plot-manager");
+    });
+
+
+</script>

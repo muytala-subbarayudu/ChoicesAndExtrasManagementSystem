@@ -1,0 +1,304 @@
+﻿@using ChoicesExtrasManagement.ViewModels;
+@model PlotRoomVM
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var counter = 1;
+}
+
+<style>
+    .offcanvas-backdrop {
+        pointer-events: none !important
+    }
+    .disabled{
+        pointer-events:none;
+        opacity:0.4;
+    }
+</style>
+<div>
+    <a asp-controller="Plot" asp-action="Index" type="button" class="btn btn-sm btn-outline-primary"> < Back to My Plots</a>&nbsp;&nbsp;&nbsp;
+    <h4 style="display:inline-block;vertical-align:sub;">PL @Model.Plot.Id - @Model.Plot.PlotType.Name of @Model.Plot.Project.Name, @Model.Plot.Project.Location.Name</h4>
+</div>
+<hr />
+
+<ul class="nav nav-pills nav-fill bg-light p-4 rounded userNavMenu">
+    @*    <li class="nav-item">
+    <a asp-controller="Plot" asp-action="PlotOverview" asp-route-id="@Model.Plot.Id" class="nav-link">Plot Overview</a>
+    </li>*@
+    <li class="nav-item">
+        <a asp-controller="Plot" asp-action="MyChoicesExtras" asp-route-id="@Model.Plot.Id" class="nav-link active">Manage Choices and Extras</a>
+    </li>
+    <li class="nav-item">
+        <a asp-controller="Plot" asp-action="PlotOrders" asp-route-id="@Model.Plot.Id" class="nav-link">Orders & Invoices</a>
+    </li>
+    <li class="nav-item">
+        <a asp-controller="Plot" asp-action="PlotNotifications" asp-route-id="@Model.Plot.Id" class="nav-link">Notifications</a>
+    </li>
+</ul>
+<br />
+<div class="row" style="padding:10px;">
+    <div id="bodySection" style="background:white;margin-right:5px;padding:15px;">
+        <a asp-controller="Plot" asp-action="ChoicesExtras" asp-route-plotid="@Model.Plot.Id" style="float:right;margin-left:4px;" type="button" class="btn btn-sm btn-outline-primary">All Choices Extras</a>
+        <a data-bs-toggle="offcanvas" style="float:right;" data-bs-target="#offcanvasBottomPay" type="button" class="btn btn-sm btn-outline-primary" onclick="LoadOrdersToPay(@Model.Plot.Id)">Review Changes & Pay Outstanding</a>
+        <br />
+        <table id="table-myrooms">
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Room</th>
+                    <th>Description</th>
+                    <th>Options</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.RoomVMs)
+                {
+                    <tr>
+                        <td>@counter</td>
+                        <td>@item.Name</td>
+                        <td>@item.Description</td>
+                        <td>
+                            <a asp-controller="Plot" asp-action="MyChoices" asp-route-plotid="@Model.Plot.Id" asp-route-mappedroomid="@item.Id" type="button" class="btn btn-sm btn-outline-primary">Manage Choices</a>
+                            <a asp-controller="Plot" asp-action="MyExtras" asp-route-plotid="@Model.Plot.Id" asp-route-mappedroomid="@item.Id" type="button" class="btn btn-sm btn-outline-primary">Manage Extras</a>
+                            <a type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottomView" onclick="LoadRoomQuickView(@Model.Plot.Id,@item.Id);">Quick View</a>
+                        </td>
+                    </tr>
+                    counter++;
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+<div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasBottomView" aria-labelledby="offcanvasBottomLabel" style="height:80vh;">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasBottomLabel">Quick View</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body small" style="padding:30px 150px;">
+        <h5>Choices</h5>
+        <table id="table-c">
+            <thead>
+                <tr>
+                    <th>Catalogue</th>
+                    <th>Option Selected</th>
+                </tr>
+            </thead>
+            <tbody id="c-body">
+            </tbody>
+        </table>
+        <br/>
+        <br />
+        <h5>Extras  - Ordered</h5>
+        <table id="table-eo">
+            <thead>
+                <tr>
+                    <th>Catalogue</th>
+                    <th>Option Selected</th>
+                    <th>Quantity</th>
+                    <th>Price Paid</th>
+                </tr>
+            </thead>
+            <tbody id="eo-body">
+            </tbody>
+        </table>
+        <br />
+        <br />
+        <h5>Extras - Yet to Order</h5>
+        <table id="table-ey">
+            <thead>
+                <tr>
+                    <th>Catalogue</th>
+                    <th>Option Selected</th>
+                    <th>Quantity</th>
+                    <th>Price to Pay</th>
+                </tr>
+            </thead>
+            <tbody id="ey-body">
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasBottomPay" aria-labelledby="offcanvasBottomLabel" style="height:80vh;">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasBottomLabel">Quick View</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body small">
+        <div class="offcanvas-body small">
+            <table id="table-orders">
+                <thead>
+                    <tr>
+                        <th>Room</th>
+                        <th>Menu</th>
+                        <th>Option </th>
+                        <th>Quantity</th>
+                        <th>Price to Pay</th>
+                    </tr>
+                </thead>
+                <tbody id="orders-body">
+                </tbody>
+            </table>
+            <br />
+            <a asp-controller="Payment" asp-action="CheckOut" asp-route-plotid="@Model.Plot.Id" type="button" class="btn btn-sm btn-outline-primary payNow">Pay Now</a>
+
+        </div>
+    </div>
+
+    <script type="text/javascript">
+
+        var totalToPay = 0;
+        function loadQuickView(plotId, roomId) {
+            // alert(plotId + "-" + roomId);
+        }
+
+        function LoadOrdersToPay(plotid) {
+            $('#table-orders').DataTable().destroy();
+
+            $.ajax(
+                {
+                    type: "GET",
+                    url: '@Url.Action("GetAllUserOutstanding","Plot")',
+                    data: {
+                        plotid: plotid
+                    },
+                    async:false,
+                    cache:false,
+                    success: function (result) {
+                        console.log(result);
+                        if (result != null) {
+                            var tableBody = '';
+                            for (let item of result) {
+                                let priceDisplay = parseFloat(item.quantity) * parseFloat(item.subCatalogue.price);
+                                let tableRow = '<tr><td>' + item.plotTypeRoomMapping.displayName + '</td><td>' + item.catalogue.name + '</td><td>' + item.subCatalogue.name + '</td><td>' + item.quantity + '</td><td>' + priceDisplay + '</td></tr>';
+                                tableBody += tableRow;
+                                totalToPay += priceDisplay;
+                                
+                            }
+                            $('#orders-body').html(tableBody);
+                            
+                        }
+
+                        if(result.length > 0){
+                            $('.payNow').text('Pay Now £ ' + totalToPay);
+                        }
+                        else{
+                            $('.payNow').addClass("disabled");
+                        }
+                    }
+                });
+            $('#table-orders').DataTable({
+                info: false,
+                "searching": false,
+                "paging": false
+            });
+        }
+
+        function LoadRoomQuickView(plotid, roomid) {
+            $('#table-c').DataTable().destroy();
+            $('#table-eo').DataTable().destroy();
+            $('#table-ey').DataTable().destroy();
+
+            $.ajax(
+                {
+                    type: "GET",
+                    url: '@Url.Action("GetAllUserChoices","Plot")',
+                    data: {
+                        plotid: plotid, mappedroomid: roomid
+                            },
+                    async: false,
+                    cache: false,
+                    success: function (result) {
+                        console.log(result);
+                        if (result != null) {                        
+                            var tableBody = '';
+                            for (let item of result.catalogueMappedList) {
+                                var subOption = item.subCatalogues.find(x => x.id == item.subCatalogueMapped);
+                                var displayname = '-';
+                                if(subOption !=null){
+                                    displayname = subOption.name;
+                                }
+                                let tableRow = '<tr><td>' + item.catalogue.name + '</td><td>' + displayname + '</td></tr>';
+                                tableBody += tableRow;
+                            }
+                            $('#c-body').html(tableBody);
+
+                        }
+                    }
+                });
+            $('#table-c').DataTable({
+                info: false,
+                "searching": false,
+                "paging": false
+            });
+
+            $.ajax(
+                {
+                    type: "GET",
+                    url: '@Url.Action("GetAllUserExtras","Plot")',
+                    data: {
+                        plotid: plotid, mappedroomid: roomid
+                    },
+                    async: false,
+                    cache: false,
+                    success: function (result) {
+                        console.log(result);
+                        if (result != null) {
+                            var tableBody = '';
+                            for (let item of result.extrasPurchasedList) {
+                                var subOption = item.subCatalogues.find(x => x.id == item.subCatalogueMapped);
+                                var displayname = '-';
+                                if (subOption != null) {
+                                    displayname = subOption.name;
+                                }
+                                let priceDisplay = parseFloat(item.subCatalogueItemCount) * parseFloat(subOption.price);
+                                let tableRow = '<tr><td>' + item.catalogue.name + '</td><td>' + displayname + '</td><td>' + item.subCatalogueItemCount + '</td><td>' + item.pricePaid + '</td></tr>';
+                                tableBody += tableRow;
+                            }
+                            $('#eo-body').html(tableBody);
+
+                            tableBody = '';
+
+                            for (let item of result.extrasToBePurchasedList) {
+                                var subOption = item.subCatalogues.find(x => x.id == item.subCatalogueMapped);
+                                var displayname = '-';
+                                if (subOption != null) {
+                                    displayname = subOption.name;
+                                }
+                                let tableRow = '<tr><td>' + item.catalogue.name + '</td><td>' + displayname + '</td><td>' + item.subCatalogueItemCount + '</td><td>' + item.pricePaid + '</td></tr>';
+                                tableBody += tableRow;
+                            }
+                            $('#ey-body').html(tableBody);
+
+                        }
+                    }
+                });
+            $('#table-eo').DataTable({
+                info: false,
+                "searching": false,
+                "paging": false
+            });
+            $('#table-ey').DataTable({
+                info: false,
+                "searching": false,
+                "paging": false
+            });
+        }
+
+
+        $(document).ready(function () {
+            $('#table-myrooms').DataTable({
+                info: false,
+                "searching": false,
+                "paging": false
+            });
+            SetMenuHighlight("plot-manager");
+
+        });
+
+    </script>

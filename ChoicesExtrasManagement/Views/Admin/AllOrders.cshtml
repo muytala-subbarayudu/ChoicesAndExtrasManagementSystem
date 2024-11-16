@@ -1,0 +1,61 @@
+﻿@using ChoicesExtrasManagement.ViewModels;
+@model IEnumerable<SavedExtra>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var counter = 1;
+}
+<style>
+
+</style>
+<br/>
+<h5>All Transactions</h5>
+<br />
+<div class="row" style="padding:10px;">
+    <div id="bodySection" style="background:white;margin-right:5px;padding:15px;">
+        <br /> 
+        <table id="table-orders">
+            <thead>
+                <tr>
+                    <th>No. </th>
+                    <th>Home Project</th>
+                    <th>Plot</th>
+                    <th>User</th>
+                    <th>Transation Reference</th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Invoice</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@counter</td>
+                        <td>@item.Plot.Project.Name</td>
+                        <td>PL @item.Plot.Id - @item.Plot.PlotType.Name</td>
+                        <td>@item.Plot.AppUser.UserName</td>
+                        <td>@item.TransactionId</td>
+                        <td>@item.Transaction.Date.ToShortDateString()</td>
+                        <td>@item.Transaction.Amount</td>
+                        <td>
+                            <a asp-controller="Plot" asp-action="MyInvoice" asp-route-plotid="@item.Plot.Id" asp-route-transactionid="@item.TransactionId" type="button" class="btn btn-sm btn-outline-primary">View Invoice</a>
+                        </td>
+                    </tr>
+                    counter++;
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#table-orders').DataTable();
+        SetMenuHighlight("admin-panel");
+    });
+
+
+</script>

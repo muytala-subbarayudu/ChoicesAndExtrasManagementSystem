@@ -1,0 +1,356 @@
+﻿@using ChoicesExtrasManagement.ViewModels;
+@model IEnumerable<ProjectPlotsViewModel>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var projectCounter = 1;
+}
+<style>
+
+    #plot-details {
+        border: 1px solid #00000029;
+        padding: 20px;
+    }
+
+</style>
+<h3 class="inlineElement">Manage Projects </h3>
+<button type="button" class="btn btn-primary inlineElement floatRight" onclick="ModelOpen('AddProject')">Add Project</button>
+<br />
+<br />
+<table id="table-projects">
+    <thead>
+        <tr>
+            <th>No.</th>
+            @*<th>Project Id</th>*@
+            <th>Project</th>
+            <th>Description</th>
+            <th>Location</th>
+            <th>No. of Plots</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@projectCounter</td>
+@*                <td id="projectId_@item.ProjectId">@item.ProjectId</td>*@
+                <td id="projectName_@item.ProjectId">@item.Name</td>
+                <td id="projectDescription_@item.ProjectId">@item.Description</td>
+                <td id="projectLocation_@item.ProjectId">@item.Location.Name</td>
+                <td id="projectLocation_@item.ProjectId">@item.PlotsList?.Count()</td>
+                <td><button class="btn btn-primary" id="plotView_@item.ProjectId" onclick="LoadPlots('@item.ProjectId')">View Plots</button></td>
+            </tr>
+            projectCounter++;
+        }
+    </tbody>
+</table>
+<br />
+<div id="plot-details" class="hidden">
+    <div>
+        <button type="button" class="btn-close floatRight" onclick="HidePlots()" aria-label="Close"></button>
+        <br /><br />
+    </div>
+    <h3 id="plot-heading" class="inlineElement"></h3>
+    <button type="button" class="btn btn-primary inlineElement floatRight" onclick="ModelOpen('AddPlot')">Add Plot</button>
+    <br /><br />
+    <table id="table-plots">
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>Plot</th>
+                <th>Description</th>
+                <th>Buyer Name</th>
+                <th>Options</th>
+            </tr>
+        </thead>
+        <tbody id="plots-body">
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal for Add Project -->
+<div class="modal fade" id="AddProjectModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="AddProjectModalTitle">Add Project</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="ModelClose('AddProject')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                 <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" class="form-control" id="projectNameInputElement" placeholder="Enter name">
+                </div>
+                 <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" class="form-control" id="projectDescriptionInputElement" placeholder="Enter description">
+                </div>
+                <div class="form-group">
+                    <label>Location</label>
+                    <select class="form-control" id="locationSelectElement" placeholder="Select location">
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="ModelClose('AddProject')">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="AddProject()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Add Plot -->
+<div class="modal fade" id="AddPlotModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="AddPlotModalTitle">Add Plot</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="ModelClose('AddPlot')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Plot Type</label>
+                    <select class="form-control" id="plotTypeSelectElement" placeholder="Select plot type">
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="ModelClose('AddPlot')">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="AddPlot()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Add Buyer -->
+<div class="modal fade" id="AddBuyerModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="AddBuyerModalTitle">Update Buyer</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="ModelClose('AddBuyer')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Buyer</label>
+                    <select class="form-control" id="buyerSelectElement" placeholder="Select buyer">
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="ModelClose('AddBuyer')">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="AddBuyer()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    var currentProject = "";
+    var currentPlotId = "";
+
+    function AddProject() {
+        var projectName = $('#projectNameInputElement').val();
+        var projectDescription = $('#projectDescriptionInputElement').val();
+        var location = $('#locationSelectElement').val();
+
+        $.ajax(
+            {
+                type: "POST",
+                url: "AddProject",
+                data: {
+                    projectName: projectName,
+                    projectDescription: projectDescription,
+                    location: location
+                },
+                success: function (result) {
+                    if (result == true) {
+                        ModelClose('AddProject');
+                        window.location.href = "/Admin/ManageProjects";
+                    }
+                }
+
+            });
+    }
+
+    function LoadLocationDrowpdown() {
+        $.ajax(
+            {
+                type: "GET",
+                url: "GetAllLocations",
+                success: function (result) {
+                    if (result != null) {
+                        var options = '';
+                        for (let item of result)
+                        {
+                            options += '<option value=' + item.id + '>' + item.name + '</option>';
+                        }
+                        $('#locationSelectElement').html(options);
+                    }
+                }
+
+            });
+    }
+
+    function LoadPlotTypeDrowpdown() {
+        $.ajax(
+            {
+                type: "GET",
+                url: "GetAllPlotTypes",
+                success: function (result) {
+                    console.log(result);
+                    if (result != null) {
+                        var options = '';
+                        for (let item of result)
+                        {
+                            options += '<option value=' + item.id + '>' + item.name + '</option>';
+                        }
+                        $('#plotTypeSelectElement').html(options);
+                    }
+                }
+
+            });
+    }
+
+    function LoadBuyerDrowpdown() {
+        $.ajax(
+            {
+                type: "GET",
+                url: "GetAllBuyers",
+                success: function (result) {
+                    console.log(result);
+                    if (result != null) {
+                        var options = ''; // <option value=0>--None--</option> codepth to un map user also.
+                        for (let item of result) {
+                            options += '<option value=' + item.id + '>' + item.userName + '</option>';
+                        }
+                        $('#buyerSelectElement').html(options);
+                    }
+                }
+
+            });
+    }
+
+    function AddPlot(){    
+        var project = currentProject;
+        localStorage.setItem("currentProject", currentProject);
+        var plotType = $('#plotTypeSelectElement').val();
+        $.ajax(
+            {
+                type: "POST",
+                url: "AddPlot",
+                data: {
+                    project: project, plotType: plotType
+                },
+                success: function (result) {
+                    if (result == true) {
+                        ModelClose('AddPlot');
+                        window.location.href = "/Admin/ManageProjects";
+                    }
+                }
+
+            });
+    }
+
+    function AddBuyer() {
+        localStorage.setItem("currentProject", currentProject);
+        var buyer = $('#buyerSelectElement').val();
+        $.ajax(
+            {
+                type: "POST",
+                url: "AddBuyer",
+                data: {
+                    buyer: buyer, plotId: currentPlotId
+                },
+                success: function (result) {
+                    if (result == true) {
+                        ModelClose('AddBuyer');
+                        window.location.href = "/Admin/ManageProjects";
+                    }
+                }
+            });
+    }
+
+    function ModelOpen(type, plotId =null) {  
+        currentPlotId = plotId;
+        $('#'+ type + 'Modal').modal('show');
+    }
+
+    function ModelClose(type){
+        currentPlotId = "";
+        $('#' + type + 'Modal').modal('hide');
+    }
+
+    function LoadPlots(projectId) {
+        currentProject = projectId;
+        var projectName = $('#projectName_' + projectId).html();
+        var projectLocation = $('#projectLocation_' + projectId).html();
+        $('#plot-details').show();
+
+        var tableHeading = 'Associated Plots for ' + projectName + ', ' + projectLocation;
+        $('#plot-heading').html(tableHeading);
+        $('#table-plots').DataTable().destroy();
+        $.ajax(
+            {
+                type: "GET",
+                url: "GetAllPlotByProject",
+                data: {
+                    project: currentProject
+                },
+                success: function (result) {
+                    console.log(result);
+                    let plotCounter = 1;
+                    if (result != null) {
+                        var tableBody = '';
+                        for (let item of result) {
+                            var addBuyerButon = '<button type="button" class="btn btn-primary" id="'+ item.plotType.id+'" onclick = "ModelOpen(\'AddBuyer\',\''+ item.id+'\')"> Add Buyer </button>';
+                            let buyer = (item.appUser == null) ? '-' : item.appUser.userName;
+                            let tableRow = '<tr><td>' + plotCounter + '</td><td> PL ' + item.id + ' - ' + item.plotType.name + '</td><td>' + item.plotType.description + '</td><td>' + buyer + '</td>';
+                            tableRow += '<td><button class="btn btn-sm btn-outline-primary" style="margin-bottom:5px;" onclick="ViewChoicesExtras(' + item.id + ')">View Choices & Extras</button><button class="btn btn-sm btn-outline-primary" onclick="ModelOpen(\'AddBuyer\',\'' + item.id + '\')">Update Buyer</button></td>'
+                            tableRow += '</tr>';
+                            tableBody +=tableRow;
+                            plotCounter++;
+                        }
+                        $('#plots-body').html(tableBody);
+                    }
+                    $('#table-plots').DataTable();
+                }
+            });        
+    }
+
+    function HidePlots() {
+        currentProject = "";
+        $('#plot-details').hide();
+    }
+
+    function ViewChoicesExtras(id){
+        window.location.href = '/Admin/ChoicesExtras?plotid=' + id;
+    }
+
+    $(document).ready(function () {
+        SetMenuHighlight("admin-panel");
+        $('#table-projects').DataTable({
+            "pageLength": 5
+        });
+        LoadLocationDrowpdown();
+        LoadPlotTypeDrowpdown();
+        LoadBuyerDrowpdown();
+        currentProject = localStorage.getItem("currentProject");
+        if(currentProject){
+            $('#plotView_' + currentProject).click();
+            localStorage.setItem("currentProject", "");
+        }
+    });
+
+</script>
+
+

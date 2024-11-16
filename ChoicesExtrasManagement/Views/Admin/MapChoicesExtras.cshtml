@@ -1,0 +1,320 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<style>
+    fieldset {
+        margin: 20px 10px;
+    }
+
+        fieldset p {
+            font-size: 16px;
+            font-weight: 500;
+        }
+</style>
+<div class="bg-light p-4 rounded row">
+    <div class="col-md-1">
+        <p for="location"><b>Plot Type</b></p>
+    </div>
+    <div class="col-md-2">
+        <select id="location" class="form-control" onchange="LoadRoomsDropdown()">
+            <option value="0" id="0">Select</option>
+            @foreach (var item in Model)
+            {
+                if (item.Id == ViewBag.CurrentPloyType)
+                {
+                    <option value="@item.Id" id="@item.Id" selected>@item.Name</option>
+                }
+                else
+                {
+                    <option value="@item.Id" id="@item.Id">@item.Name</option>
+                }
+
+            }
+        </select>
+    </div>
+    <div class="col-md-1"></div>
+    <div class="col-md-1">
+        <p for="location"><b>Room</b></p>
+    </div>
+    <div class="col-md-2">
+        <select id="room" class="form-control">
+            <option value="0" id="0">Select</option>
+        </select>
+    </div>
+    <div class="col-md-1"></div>
+    <div class="col-md-2">
+        <button class="btn btn-primary" onclick="LoadChoicesExtras()">Submit</button>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-md-6">
+        <div id="choicesSection" style="height: 60vh; background:white;margin-right:5px;padding:15px;">
+            <div style="margin-bottom: 20px;">
+                <h4 style="display:inline;vertical-align:top;">Choices</h4>&nbsp;
+                <button type="button" class="btn btn-sm btn-outline-primary" style="display:inline;" onclick="CheckAllChoices()">Select All</button> &nbsp;
+                <button type="button" class="btn btn-sm btn-outline-primary" style="display:inline;" onclick="UnCheckAllChoices()">Un-Select All</button>
+                <button type="button" class="btn btn-sm btn-outline-primary" style="display:inline;float:right;" onclick="SaveChoices()">Save Changes</button>
+            </div>
+            <div style="overflow-y:scroll;height: 50vh; background-color:#f9f9f9;border-radius:10px;padding-left:10px;" id="choicesDiv">
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div id="extrasSection" style="height: 60vh; background:white;margin-left:5px;padding:15px;">
+            <div style="margin-bottom: 20px;">
+                <h4 style="display:inline;vertical-align:top;">Extras</h4>   &nbsp;
+                <button type="button" class="btn btn-sm btn-outline-primary" style="display:inline;" onclick="CheckAllExtras()">Select All</button> &nbsp;
+                <button type="button" class="btn btn-sm btn-outline-primary" style="display:inline;" onclick="UnCheckAllExtras()">Un-Select All</button>
+                <button type="button" class="btn btn-sm btn-outline-primary" style="display:inline;float:right;" onclick="SaveExtras()">Save Changes</button>
+            </div>
+            <div style="overflow-y:scroll;height: 50vh; background-color:#f9f9f9;border-radius:10px;padding-left:10px;" id="extrasDiv">                                              
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function LoadRoomsDropdown() {
+        var plotTypeId = $('#location').val();
+        $.ajax(
+            {
+                type: "GET",
+                url: "GetAllRoomsByPlotType",
+                data: {
+                    plotType: plotTypeId
+                },
+                success: function (result) {
+                    console.log(result);
+                    if (result != null) {
+                        var options = '<option value="0" id="0">Select</option>';
+                        for (let item of result) {
+                            options += '<option value=' + item.id + '>' + item.name + '</option>';
+                        }
+                        $('#room').html(options);
+                    }
+                }
+
+            });
+    }
+
+    function LoadChoicesExtras() {
+        var plotTypeId = $('#location').val();
+        var roomId = $('#room').val();
+
+        if (plotTypeId == 0 || roomId == 0) {
+            // alert('Please select both Plot Type and Room !');
+            Swal.fire(
+                'Alert!',
+                'Please select both Plot Type and Room!',
+                'warning'
+            );
+        }
+        else {
+            $.ajax(
+                {
+                    type: "GET",
+                    url: "GetAllChoicesMappings",
+                    cache: false,
+                    async: false,
+                    data: {
+                        plotType: plotTypeId, roomId: roomId
+                    },
+                    success: function (result) {
+                        $('#choicesDiv').html('');
+                        if (result != null) {
+                            console.log(result);
+                            var choice = '';
+                            for (let item of result) {
+                                choice += '<fieldset class="choices" id=C_' + item.id + '>';
+                                choice += '<p>' + item.name + '</p>';
+                                var count = 0;
+                                for (let sub of item.subCatalogueListVMs) {
+                                    var checked = (sub.isMapped == true) ? 'checked' : '';
+                                    choice += '<input  type="checkbox" id=SC_' + sub.id + ' name ="' + sub.name + '" value="' + sub.name + '"' + checked + '> &nbsp;';
+                                    choice += '<label for="SC_' + sub.id + '">' + sub.name + '</label> &nbsp;&nbsp;';
+                                    count++;
+                                    if(count%3 == 0){
+                                        choice += '<br/>';
+                                    }
+                                }
+                                choice += ' </fieldset>';
+                            }
+                            $('#choicesDiv').append(choice);
+
+                        }
+                    }
+
+                });
+
+            $.ajax(
+                {
+                    type: "GET",
+                    url: "GetAllExtrasMappings",
+                    cache: false,
+                    async: false,
+                    data: {
+                        plotType: plotTypeId, roomId: roomId
+                    },
+                    success: function (result) {
+                        $('#extrasDiv').html('');
+                        if (result != null) {
+                            console.log(result);
+                            var extra = '';
+                            var count1 = 0;
+                            for (let item of result) {
+                                extra += '<fieldset class="extras" id=E_' + item.id + '>';
+                                extra += '<p>' + item.name + '</p>';
+                                for (let sub of item.subCatalogueListVMs) {
+                                    var checked = (sub.isMapped == true) ? 'checked' : '';
+                                    extra += '<input  type="checkbox" id=SE_' + sub.id + ' name ="' + sub.name + '" value="' + sub.name + '"' + checked + '> &nbsp;';
+                                    extra += '<label for="SE_' + sub.id + '">' + sub.name + '</label> &nbsp;&nbsp;';
+                                    count1++;
+                                    if (count1 % 3 == 0) {
+                                        extra += '<br/>';
+                                    }
+                                }
+                                extra += ' </fieldset>';
+                            }
+                            $('#extrasDiv').append(extra);
+                        }
+                    }
+
+                });
+        }
+    }
+
+    function CheckAllChoices() {
+        $('#choicesDiv input[type="checkbox"]').attr('checked', 'checked');
+    }
+
+    function UnCheckAllChoices() {
+        $('#choicesDiv input[type="checkbox"]').removeAttr("checked");
+    }
+
+    function CheckAllExtras() {
+        $('#extrasDiv input[type="checkbox"]').attr('checked', 'checked');
+    }
+
+    function UnCheckAllExtras() {
+        $('#extrasDiv input[type="checkbox"]').removeAttr("checked");
+    }
+
+    function SaveChoices() {
+        var choicesResult = [];
+        var plotTypeId = $('#location').val();
+        var roomId = $('#room').val();
+
+        $('fieldset.choices').each(function (k, v) {
+
+            let choiceId = $(this).attr('id');
+
+            var subList = [];
+
+            $('#' + choiceId + ' input[type="checkbox"]').each(function (k, v) {
+                let subChoiceId = $(this).attr('id');
+                var checked = $('#' + subChoiceId).is(":checked");
+                subList.push({
+                    id: subChoiceId.split('_')[1],
+                    name: '',
+                    isMapped: checked
+                        });
+            });
+
+            choicesResult.push({
+                id: choiceId.split('_')[1],
+                name: '',
+                subCatalogueListVMs: subList
+            });
+        });
+
+        console.log(choicesResult);
+        choicesResult = JSON.stringify(choicesResult);
+        $.ajax(
+            {
+                type: "POST",
+                url: "SaveChoices",
+                type: "string",
+                data: {
+                    jsonResult: choicesResult, plotType: plotTypeId, roomId: roomId
+                },
+                success: function (result) {
+                    if (result == true) {
+                        choicesResult = [];
+                        Swal.fire(
+                            'Success!',
+                            'Saved Changes!',
+                            'success'
+                        );
+                    }
+                }
+
+            });
+
+
+    }
+
+    function SaveExtras() {
+        var extrasResult = [];
+        var plotTypeId = $('#location').val();
+        var roomId = $('#room').val();
+
+        $('fieldset.extras').each(function (k, v) {
+
+            let extraId = $(this).attr('id');
+
+            var subList = [];
+
+            $('#' + extraId + ' input[type="checkbox"]').each(function (k, v) {
+                let subExtraId = $(this).attr('id');
+                var checked = $('#' + subExtraId).is(":checked");
+                subList.push({
+                    id: subExtraId.split('_')[1],
+                    name: '',
+                    isMapped: checked
+                });
+            });
+
+            extrasResult.push({
+                id: extraId.split('_')[1],
+                name: '',
+                subCatalogueListVMs: subList
+            });
+        });
+
+        console.log(extrasResult);
+
+        extrasResult = JSON.stringify(extrasResult);
+        $.ajax(
+            {
+                type: "POST",
+                url: "SaveExtras",
+                type: "string",
+                data: {
+                    jsonResult: extrasResult, plotType: plotTypeId, roomId: roomId
+                },
+                success: function (result) {
+                    if (result == true) {
+                        extrasResult = [];
+                        //alert('Saved!')
+                        Swal.fire(
+                            'Success!',
+                            'Saved Changes!',
+                            'success'
+                        );
+                    }
+                }
+
+            });
+    }
+
+    $(document).ready(function () {
+        SetMenuHighlight("admin-panel");
+        var plotTypeId = $('#location').val();
+        if (plotTypeId != 0) {
+            LoadRoomsDropdown();
+        }
+    });
+</script>

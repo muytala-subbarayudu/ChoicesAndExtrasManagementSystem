@@ -1,0 +1,124 @@
+﻿@using ChoicesExtrasManagement.ViewModels;
+@using Newtonsoft;
+@using Newtonsoft.Json;
+@model CatalogueDisplayVM
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var resultList = Html.Raw(Json.Serialize(@Model.CatalogueMappedList));
+    var plotRoomId = Html.Raw(Json.Serialize(@Model.PlotTypeRoomMapping.Id));
+    var plotId = Html.Raw(Json.Serialize(@Model.Plot.Id));
+}
+<style>
+    thead tr th:first-child,
+    tbody tr td:first-child {
+        width: 20em;
+        min-width: 20em;
+        max-width: 20em;
+        word-break: break-all;
+    }
+
+    .descriptionText{
+        font-size: 14px !important;
+        font-weight: 400 !important;
+        margin-top:10px;
+        font-style:italic;
+    }
+</style>
+<br />
+<button class="btn btn-sm btn-outline-primary" onclick="history.back()">< Back</button>
+<br />
+<br />
+<h5>Choices for @Model.PlotTypeRoomMapping.DisplayName</h5>
+<br />
+<table id="table-mychoices" class="table table-responsive table-light table-bordered">
+    <thead>
+        <tr>
+            <th>Catalogue</th>
+            <th>Choices</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in Model.CatalogueMappedList)
+        {
+            <tr>
+                <td><b>@item.Catalogue.Name</b> <p class="descriptionText">@item.Catalogue.Description</p></td>
+                <td>
+                    <div class="row" style="margin:5px 0px;">
+                        @foreach (var subItem in item.SubCatalogues)
+                        {
+                            if(subItem.Id == item.SubCatalogueMapped)
+                            {
+                                <div class="form-check col-md-4" style="margin:5px">
+                                    <input class="form-check-input" type="radio" name="radioset_@subItem.CatalogueId" id="radio_@subItem.Id" value="@subItem.CatalogueId-@subItem.Id" checked>
+                                    <label class="form-check-label" for="radio_@subItem.Id">
+                                        @subItem.Name 
+                                    </label>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="form-check col-md-4" style="margin:5px">
+                                    <input class="form-check-input" type="radio" name="radioset_@subItem.CatalogueId" id="radio_@subItem.Id" value="@subItem.CatalogueId-@subItem.Id">
+                                    <label class="form-check-label" for="radio_@subItem.Id">
+                                        @subItem.Name
+                                    </label>
+                                </div>
+                            }
+                            
+                        }
+                    </div>
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+<button class="btn btn-primary" onclick="SaveChoices()">Save Changes</button>
+
+<script type="text/javascript">
+
+    var finalResult = @resultList;
+
+    $("input[id^=radio_]").change(function () {
+        let value = $(this).val().split('-');
+        var existingRow = finalResult.find(x=>x.catalogue.id == value[0]);
+        existingRow.subCatalogueMapped = parseInt(value[1]);
+        console.log(finalResult);
+    });
+
+    function SaveChoices(){
+
+        var sendResult = [];
+        sendResult = JSON.stringify(finalResult);
+        $.ajax(
+            {
+                type: "POST",
+                url: "SaveChoices",
+                type: "string",
+                data: {
+                    jsonResult: sendResult, plotRoomId: @plotRoomId, plotId: @plotId
+                },
+                success: function (result) {
+                    if (result == true) {
+                        sendResult = [];
+                        //alert('Saved!');
+                        Swal.fire(
+                            'Success!',
+                            'Saved Changes!',
+                            'success'
+                        );
+                    }
+                }
+
+            });
+
+
+    } // Change Later
+    
+    $(document).ready(function () {
+        SetMenuHighlight("plot-manager");
+    });
+</script>

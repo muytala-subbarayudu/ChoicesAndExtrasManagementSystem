@@ -1,0 +1,248 @@
+﻿@using ChoicesExtrasManagement.ViewModels;
+@model IEnumerable<SubCatalogueViewModel>
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var counter = 1;
+}
+<a asp-controller="Admin" asp-action="ManageCatalogues" type="button" class="btn btn-sm btn-outline-primary">< Back to All Catalogues</a>
+<br />
+<br />
+<h3 id="plot-heading" class="inlineElement">Sub Catalogues for @ViewBag.catalogueName</h3>
+<button type="button" class="btn btn-primary inlineElement floatRight" onclick="ModelOpen('AddSubCatalogue')">Add Sub Catalogue Item</button>
+<br />
+<br />
+<table id="table-subcatalogues">
+    <thead>
+        <tr>
+            <th>No.</th>
+            <th>Name</th>
+            @*<th>Stock</th>*@
+            <th>Price</th>
+            <th>Options</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@counter</td>
+                <td>@item.Name</td>
+               @* <td>@item.Quantity</td>*@
+                <td>@item.Price</td>
+                <td>
+                    @*<button type="button" class="btn btn-sm btn-outline-primary" onclick="OpenStock('@item.Id','@item.Quantity')">Update Stock</button>*@
+                    <button type="button" class="btn btn-sm btn-outline-primary" onclick="OpenEdit('@item.Id','@item.Price')">Edit Price</button>
+                    @*<button type="button" class="btn btn-sm btn-outline-primary">Delete</button>*@
+                </td>
+            </tr>
+            counter++;
+        }
+    </tbody>
+</table>
+
+<!-- Modal for Add Sub Catalogue -->
+<div class="modal fade" id="AddSubCatalogueModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="AddSubCatalogueModalTitle">Add Sub Catalogue</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="ModelClose('AddSubCatalogue')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" class="form-control" id="subCatalogueNameInputElement" placeholder="Enter name">
+                </div>
+                <div class="form-group">
+                    <label>Price</label>
+                    <input type="text" class="form-control" id="subCataloguePriceInputElement" placeholder="Enter price">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="ModelClose('AddSubCatalogue')">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="AddSubCatalogue()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Edit Sub Catalogue -->
+<div class="modal fade" id="EditSubCatalogueModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="EditSubCatalogueModalTitle">Edit Price</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="ModelClose('EditSubCatalogue')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Price</label>
+                    <input type="text" class="form-control" id="editSubCataloguePriceInputElement" placeholder="Enter price">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="spinner-border text-primary" role="status" id="spinner" style="display:none;">
+                    <span class="sr-only"></span>
+                </div>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="ModelClose('EditSubCatalogue')">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="UpdateSubCatalogue()">Save</button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal for Stock Sub Catalogue -->
+<div class="modal fade" id="StockSubCatalogueModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="StockSubCatalogueModalTitle">Udpate Stock</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="ModelClose('StockSubCatalogue')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Quantity</label>
+                    <input type="number" class="form-control" id="stockSubCataloguePriceInputElement" min="0" placeholder="Enter quantity">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="ModelClose('StockSubCatalogue')">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="UpdateStockSubCatalogue()">Save</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+     var catalogueId = parseInt(@ViewBag.catalogueId);
+     var sub = "";
+    function ModelOpen(type) {
+        $('#' + type + 'Modal').modal('show');
+    }
+
+    function ModelClose(type) {
+        $('#' + type + 'Modal').modal('hide');
+    }
+
+
+    function OpenEdit(id, price){
+        $('#editSubCataloguePriceInputElement').val(price);
+        ModelOpen('EditSubCatalogue');
+        sub = id;
+
+    }
+
+    function OpenStock(id, qty) {
+        $('#stockSubCataloguePriceInputElement').val(qty);
+        ModelOpen('StockSubCatalogue');
+        sub = id;
+
+    }
+
+    function UpdateStockSubCatalogue() {
+        var qty = $('#stockSubCataloguePriceInputElement').val();
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("UpdateStockSubCatalogue","Admin")',
+            data: {
+                catalogueId: catalogueId,
+                subcatalogueId: sub,
+                qty: qty
+            },
+            success: function (result) {
+                if (result == true) {
+                    ModelClose('StockSubCatalogue');
+                    Swal.fire(
+                        'Success!',
+                        'Stock Updated!',
+                        'success'
+                    ).then(function () {
+                        window.location.href = "/Admin/ManageSubCatalogues/" + catalogueId;
+                    });
+                }
+            }
+
+        });
+    }
+
+    function UpdateSubCatalogue(){
+        
+        var price = $('#editSubCataloguePriceInputElement').val();
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("UpdateSubCatalogue","Admin")',
+            data: {
+                catalogueId: catalogueId,
+                subcatalogueId: sub,
+                price: price
+            },
+            beforeSend: function () {
+                $('#spinner').show();
+            },
+            success: function (result) {        
+                if (result == true) {
+                    $('#spinner').hide();
+                    ModelClose('EditSubCatalogue');
+                    Swal.fire(
+                        'Success!',
+                        'Price Updated!',
+                        'success'
+                    ).then(function () {
+                        window.location.href = "/Admin/ManageSubCatalogues/" + catalogueId;   
+                    });
+                }
+            }
+
+        });
+    }
+    function AddSubCatalogue() {
+        var subCatalogueName = $('#subCatalogueNameInputElement').val();
+        var subCataloguePrice = parseFloat($('#subCataloguePriceInputElement').val());
+        var catalogueId = parseInt(@ViewBag.catalogueId);
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("AddSubCatalogue","Admin")',
+            data: {
+                catalogueId: catalogueId,
+                subCatalogueName: subCatalogueName,
+                subCataloguePrice: subCataloguePrice
+            },
+            success: function (result) {
+                if (result == true) {
+                    ModelClose('AddSubCatalogue');
+                    Swal.fire(
+                        'Success!',
+                        'New Sub Catalogue Added !',
+                        'success'
+                    ).then(function () {
+                        window.location.href = "/Admin/ManageSubCatalogues/" + catalogueId;
+                    });
+                }
+            }
+
+        });
+    }
+
+
+
+    $(document).ready(function () {
+        $('#table-subcatalogues').DataTable();
+        SetMenuHighlight("admin-panel");
+    });
+
+</script>

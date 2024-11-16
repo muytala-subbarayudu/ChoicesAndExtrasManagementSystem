@@ -1,0 +1,95 @@
+﻿@model IEnumerable<SavedExtra>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    decimal? total = 0;
+}
+
+<br />
+<button class="btn btn-sm btn-outline-primary" onclick="history.back()">< Back</button>
+<br />
+<br />
+<div class="row" id="invoice">
+    <h4>Invoice Details</h4>
+    <br />
+    <br/>
+    <p>Transaction Reference :  @Model.FirstOrDefault().TransactionId</p>
+    <p>Transaction Date :  @Model.FirstOrDefault().Transaction.Date.ToShortDateString()</p>
+    <p>Transaction Status :  @Model.FirstOrDefault().Transaction.Status</p>
+    <hr />
+    <div id="bodySection" style=" background:white;margin-right:5px;">
+        <br />
+        <table id="table-invoice" class="table table-responsive table-light table-bordered">
+            <thead>
+                <tr>
+                    <th>Catalogue</th>
+                    <th>Option</th>
+                    <th>Quantity</th>
+                    <th>Price Paid</th>
+                </tr>
+            </thead>
+            <tbody>
+                <p>Catalogue Items</p>
+
+                @foreach (var item in Model)
+                {                    
+                    <tr>
+                        <td>@item.Catalogue.Name</td>
+                        <td>@item.SubCatalogue.Name</td>
+                        <td>@item.Quantity</td>
+                        <td>@item.AmountPaid</td>
+                    </tr>
+                    total +=  @item.AmountPaid;
+                }
+            </tbody>
+        </table>
+    </div>
+    <hr />
+    <p>Total Amount :  @total</p>
+</div>
+<button class="btn btn-sm btn-outline-primary" onclick="DownloadPDF()">Save PDF</button>
+
+
+<script src="https://jasonday.github.io/printThis/printThis.js"></script>
+<script type="text/javascript">
+    //function DownloadPDF() {
+    //    var doc = new jsPDF();
+    //    var title = "Invoice";
+    //    var divId = "invoice";
+    //    doc.fromHTML(document.getElementById(divId).innerHTML);
+    //    doc.save('Invoice.pdf');
+    // html2pdf().from(element).save();
+    //html2canvas($("#invoice")[0], {
+    //    onrendered: function (canvas) {
+    //        var imgData = canvas.toDataURL(
+    //            'image/png');
+    //        var doc = new jsPDF('p', 'mm');
+    //        doc.addImage(imgData, 'PNG', 10, 10);
+    //        doc.save('sample-file.pdf');
+    //    }
+    //});
+    //} 
+
+
+    function DownloadPDF() {
+        var element = document.getElementById('invoice');
+
+        html2canvas(document.getElementById('invoice'), {scrollY: -window.scrollY}).then(function (canvas) {
+
+            var img = canvas.toDataURL('image/png');
+            
+            let pdf = new jsPDF('p', 'px', [1600,1131]);
+            pdf.addImage(img, 'PNG', 15, 15, 1000, 0);
+            pdf.save('invoice.pdf');
+        });
+    }
+
+
+        $(document).ready(function () {
+        //$('#table-invoice').DataTable();
+        SetMenuHighlight("plot-manager");
+    });
+
+
+</script>

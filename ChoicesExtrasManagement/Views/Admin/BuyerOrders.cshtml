@@ -1,0 +1,49 @@
+﻿@using ChoicesExtrasManagement.ViewModels;
+@model PlotOrderVM
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var plotOnwer = Model.Plot.AppUser.UserName;
+    var counter = 1;
+}
+<br />
+<button class="btn btn-sm btn-outline-primary" onclick="history.back()">< Back</button>
+<br />
+<br />
+<h4>Orders of Buyer : @plotOnwer</h4>
+<br />
+<table id="table-orders">
+    <thead>
+        <tr>
+            <th>No. </th>
+            <th>Transation Reference</th>
+            <th>Date</th>
+            <th>Amount</th>
+            <th>Invoice</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.SavedExtras)
+        {
+            <tr>
+                <td>@counter</td>
+                <td>@item.TransactionId</td>
+                <td>@item.Transaction.Date.ToShortDateString()</td>
+                <td>@item.Transaction.Amount</td>
+                <td>
+                    <a asp-controller="Plot" asp-action="MyInvoice" asp-route-plotid="@item.Plot.Id" asp-route-transactionid="@item.TransactionId" type="button" class="btn btn-sm btn-outline-primary">View Invoice</a>
+                </td>
+            </tr>
+            counter++;
+        }
+    </tbody>
+</table>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#table-orders').DataTable();
+        SetMenuHighlight("admin-panel");
+    });
+
+
+</script>

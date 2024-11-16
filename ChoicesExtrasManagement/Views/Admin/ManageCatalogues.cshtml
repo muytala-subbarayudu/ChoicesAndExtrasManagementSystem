@@ -1,0 +1,137 @@
+﻿@using ChoicesExtrasManagement.ViewModels;
+@model IEnumerable<CatalogueViewModel>
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var counter = 1;
+}
+
+<h3 id="plot-heading" class="inlineElement">Manage Catalogue</h3>
+<button type="button" class="btn btn-primary inlineElement floatRight" onclick="ModelOpen('AddCatalogue')">Add Catalogue Item</button>
+<br />
+<br />
+<table id="table-catalogues">
+    <thead>
+        <tr>
+            <th>No.</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Type</th>
+            <th>Sub Catalogues</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@counter</td>
+                <td>@item.Name</td>
+                <td>@item.Description</td>
+                @if(@item.SingleOrMultiple == false){
+                <td>Single</td>
+                }
+                else{
+                <td>Multiple</td>
+                }
+                
+                <td>@item.SubCatalogueItems.Count()</td>
+                <td>
+                    <a asp-controller="Admin" asp-action="ManageSubCatalogues" asp-route-id="@item.Id" type="button" class="btn btn-sm btn-outline-primary">View Sub Catalogue</a>
+                    @*<button type="button" class="btn btn-sm btn-outline-primary">Edit</button>
+                    @if (@item.SubCatalogueItems.Count() == 0)
+                    {
+                        <button type="button" class="btn btn-sm btn-outline-primary">Delete</button>
+                    }*@
+                </td>
+            </tr>
+            counter++;
+        }
+    </tbody>
+</table>
+
+<!-- Modal for Add Catalogue -->
+<div class="modal fade" id="AddCatalogueModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="AddCatalogueModalTitle">Add Catalogue</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="ModelClose('AddCatalogue')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" class="form-control" id="catalogueNameInputElement" placeholder="Enter name">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" class="form-control" id="catalogueDescriptionInputElement" placeholder="Enter description">
+                </div>
+                <div class="form-group">
+                    <label>Type</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="SingleorMulitple" id="radio1" value="false" checked>
+                        <label class="form-check-label" for="radio1">
+                            Single
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="SingleorMulitple" value="true" id="radio2">
+                        <label class="form-check-label" for="radio2">
+                            Mutiple
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="ModelClose('AddCatalogue')">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="AddCatalogue()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function AddCatalogue() {
+        var catalogueName = $('#catalogueNameInputElement').val();
+        var catalogueDescription = $('#catalogueDescriptionInputElement').val();
+        var singleOrMultiple = $("input[name='SingleorMulitple']:checked").val();
+
+        $.ajax({
+            type: "POST",
+            url: "AddCatalogue",
+            data: {
+                catalogueName: catalogueName,
+                catalogueDescription: catalogueDescription,
+                singleOrMultiple: singleOrMultiple
+            },
+            success: function (result) {
+                if (result == true) {
+                    ModelClose('AddCatalogue');
+                    window.location.href = "/Admin/ManageCatalogues";
+                }
+            }
+
+        });
+    }
+
+    function ModelOpen(type) {
+        $('#' + type + 'Modal').modal('show');
+    }
+
+    function ModelClose(type) {
+        $('#' + type + 'Modal').modal('hide');
+    }
+
+    $(document).ready(function () {
+        $('#table-catalogues').DataTable();
+        SetMenuHighlight("admin-panel");
+
+    });
+
+</script>

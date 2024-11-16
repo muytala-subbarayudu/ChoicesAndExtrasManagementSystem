@@ -1,0 +1,272 @@
+﻿@using ChoicesExtrasManagement.ViewModels;
+@model IEnumerable<PlotTypesViewModel>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var counter = 1;
+}
+<style>
+
+    #room-details {
+        border: 1px solid #00000029;
+        padding: 20px;
+    }
+
+</style>
+<h3 id="plot-heading" class="inlineElement">Manage Plot Types</h3>
+<button type="button" class="btn btn-primary inlineElement floatRight" onclick="ModelOpen('AddPlotType')">Add Plot Type</button>
+<br />
+<br />
+<table id="table-plottype">
+    <thead>
+        <tr>
+            <th>No.</th>
+            <th>Plot Type</th>
+            <th>Description</th>
+            <th>Amount</th>
+            <th>Room Details</th>
+            <th>Options</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@counter</td>
+                <td>@item.Name</td>
+                <td>@item.Description</td>
+                <td>@item.Amount</td>
+                @if(@item.RoomDetails == null){
+                    <td><button type="button" class="btn btn-sm btn-outline-primary" onclick="MapRooms('@item.Id')">Map Rooms</button></td>
+                    <td></td>
+                }
+                else{
+                <td>@item.RoomDetails</td>
+                    <td><button type="button" class="btn btn-sm btn-outline-primary" onclick="AddRoom('@item.Id')">Add Room</button></td>
+                }              
+            </tr>
+            counter++;
+        }
+    </tbody>
+</table>
+
+<br />
+
+<!-- Modal for Add Plot Type -->
+
+<div class="modal fade" id="AddPlotTypeModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="AddPlotTypeModalTitle">Add Plot Type</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="ModelClose('AddPlotType')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" class="form-control" id="plotTypeNameInputElement" placeholder="Enter plot type">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" class="form-control" id="plotTypeDescriptionInputElement" placeholder="Enter description">
+                </div>
+                <div class="form-group">
+                    <label>Amount</label>
+                    <input type="text" class="form-control" id="plotTypeAmountInputElement" placeholder="Enter amount">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="ModelClose('AddPlotType')">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="AddPlotType()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Map Rooms -->
+
+<div class="modal fade" id="MapRoomModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="MapRoomModalTitle">Map Rooms</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="ModelClose('MapRoom')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @foreach (var rooms in Model.First().AllRooms)
+                {
+                    <div class="form-group">
+                        <label>@rooms.Name</label>
+                        <input type="number" class="form-control" id="@rooms.Id" placeholder="Enter number">
+                    </div>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="ModelClose('MapRoom')">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="SaveMapedRooms()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Add Rooms -->
+
+<div class="modal fade" id="AddRoomModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="AddRoomModalTitle">Add Room</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="ModelClose('AddRoom')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Room</label>
+                    <select class="form-control" id="roomSelectElement" placeholder="Select Room">
+                        @foreach (var room in Model.First().AllRooms)
+                        {
+                            <option value="@room.Id">@room.Name</option>
+                        }
+                        </select>
+                </div>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="ModelClose('AddRoom')">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="SaveAddRoom()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    var currentPlotType = 0;
+
+    function AddPlotType() {
+        var plotType = $('#plotTypeNameInputElement').val();
+        var plotTypeDescription = $('#plotTypeDescriptionInputElement').val();
+        var amount = $('#plotTypeAmountInputElement').val();
+        $.ajax(
+            {
+                type: "POST",
+                url: "AddPlotType",
+                data: {
+                    plotType: plotType,
+                    description: plotTypeDescription,
+                    amount: amount
+                },
+                success: function (result) {
+                    if (result == true) {
+                        ModelClose('AddPlotType');
+                        window.location.href = "/Admin/ManagePlotTypes";
+                    }
+                }
+
+            });
+    }
+
+    function AddRoom(plotTypeId) {
+        currentPlotType = plotTypeId;
+        ModelOpen('AddRoom');
+    }
+
+    function ModelOpen(type) {
+        $('#' + type + 'Modal').modal('show');
+    }
+
+    function ModelClose(type) {
+        $('#' + type + 'Modal').modal('hide');
+    }
+
+    function MapRooms(plotTypeId) {
+        currentPlotType = plotTypeId;
+        ModelOpen('MapRoom');
+    }
+    
+    function SaveAddRoom(){
+        var roomOption = $('#roomSelectElement').val();
+
+        var roomMappings = [];
+
+        roomMappings.push({
+            plotTypeId: parseInt(currentPlotType),
+            roomId: parseInt(roomOption),
+            count: 1
+        });
+
+        roomMappings = JSON.stringify(roomMappings);
+
+        $.ajax(
+            {
+                type: "POST",
+                url: "SaveMappedRooms",
+                type: "string",
+                data: {
+                    jsonResult: roomMappings
+                },
+                success: function (result) {
+                    if (result == true) {
+                        roomMappings = [];
+                        ModelClose('AddRoom');
+                        window.location.href = "/Admin/ManagePlotTypes";
+                    }
+                }
+
+            });
+    }
+
+    function SaveMapedRooms(){
+        
+        var roomMappings = [];
+
+        $('input[type=number]').each(function (k, v) {
+
+            let roomId = $(this).attr('id');
+
+            roomMappings.push({
+                plotTypeId: parseInt(currentPlotType),
+                roomId: parseInt(roomId),
+                count: $(this).val()
+            })
+        });
+
+        console.log(roomMappings);
+
+        roomMappings = JSON.stringify(roomMappings);
+        console.log(roomMappings);
+        $.ajax(
+            {
+                type: "POST",
+                url: "SaveMappedRooms",
+                type:"string",
+                data: {
+                    jsonResult: roomMappings
+                },
+                success: function (result) {
+                    if (result == true) {
+                        roomMappings = [];
+                        ModelClose('MapRoom');
+                        window.location.href = "/Admin/ManagePlotTypes";
+                    }
+                }
+
+            });
+
+    }
+
+    $(document).ready(function () {
+        $('[id^=table]').DataTable();
+        SetMenuHighlight("admin-panel");
+    });
+
+</script>
+
+
+

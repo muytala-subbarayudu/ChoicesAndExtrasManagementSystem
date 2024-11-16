@@ -1,0 +1,88 @@
+﻿@using ChoicesExtrasManagement.ViewModels;
+@model ProjectsViewModel
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var currentLocation = Model.currentLocation;
+}
+<style>
+    .project-description {
+        min-height:50px !important;
+    }
+</style>
+
+<div class="bg-light p-4 rounded">
+    <div class="col-md-2" style="display:inline-block;">
+        <p for="location"><b>Filter By Location</b></p>
+    </div>
+    <div class="col-md-4" style="display:inline-block;">
+        <select id="location" class="form-control" onchange="loadProjects()">
+            <option value="0" id="0">All locations</option>
+            @foreach (var item in Model.AllLocations)
+            {
+                if(item.Id == currentLocation)
+                {
+                    <option value="@item.Id" id="@item.Id" selected>@item.Name</option>
+                }
+                else
+                {
+                    <option value="@item.Id" id="@item.Id">@item.Name</option>
+                }
+                
+            }
+        </select>
+    </div>
+</div>
+
+<br />
+<br />
+<div class="row row-cols-1 row-cols-sm-3 row-cols-md-4 g-3">
+    
+    @if (Model.Projects.Count() == 0)
+        {
+            <div class="col">
+                <br /><br />
+                <p>No Associated Projects</p>
+            </div>
+        }
+        else
+        {
+        @foreach (var item in Model.Projects)
+    {
+        <div class="col">
+            <div class="card shadow-sm">
+                <img class="bd-placeholder-img card-img-top" width="100%" height="200" style="object-fit:fill;" src="~/assets/images/projects.jpg" />
+                <div class="card-body">
+                    <p class="card-text">@item.Name</p>
+                    <p class="card-text project-description">@item.Description</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="btn-group">
+                            <a asp-controller="Project" asp-action="Detail" asp-route-id="@item.Id" type="button" class="btn btn-sm btn-outline-secondary">View</a>
+                        </div>
+                        <small class="text-body-secondary">@item.Location.Name</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    }
+</div>
+
+<script>
+
+    function loadProjects() {
+        var location = $('#location').find(":selected").val();
+        if(location !== '0'){
+        window.location.href = '/Project?location='+location;
+        }
+        else{
+            window.location.href = '/Project';
+        }
+    }
+
+    $(document).ready(function () {
+        SetMenuHighlight("all-projects");
+        
+    });
+</script>

@@ -1,0 +1,95 @@
+﻿@model IEnumerable<Location>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var counter = 1;
+}
+
+<h3 id="plot-heading" class="inlineElement">Manage Locations</h3>
+<button type="button" class="btn btn-primary inlineElement floatRight" onclick="ModelOpen('AddLocation')">Add Location</button>
+<br />
+<br />
+<table id="table-location">
+    <thead>
+        <tr>
+            <th>No.</th>
+            <th>Location</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@counter</td>
+                <td>@item.Name</td>
+            </tr>
+            counter++;
+        }
+    </tbody>
+</table>
+
+<!-- Modal for Add Location -->
+
+<div class="modal fade" id="AddLocationModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="AddLocationModalTitle">Add Location</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="ModelClose('AddLocation')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Location</label>
+                    <input type="text" class="form-control" id="locationInputElement" placeholder="Enter location">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="ModelClose('AddLocation')">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="AddLocation()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    function AddLocation() {
+        var location = $('#locationInputElement').val();
+        $.ajax(
+            {
+                type: "POST", 
+                url: "AddLocation",
+                data: { 
+                    location: location
+                },
+                success: function(result){
+                   if(result==true){
+                        ModelClose('AddLocation');
+                        window.location.href = "/Admin/ManageLocations";
+                   }
+                }
+
+            });
+    }
+
+    function ModelOpen(type) {
+        $('#' + type + 'Modal').modal('show');
+    }
+
+    function ModelClose(type) {
+        $('#' + type + 'Modal').modal('hide');
+    }
+
+    $(document).ready(function () {
+        $('#table-location').DataTable();
+        SetMenuHighlight("admin-panel");
+    });
+
+
+</script>
+
+

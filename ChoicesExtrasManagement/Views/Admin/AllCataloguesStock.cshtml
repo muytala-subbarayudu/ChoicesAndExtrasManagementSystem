@@ -1,0 +1,200 @@
+﻿@using ChoicesExtrasManagement.ViewModels;
+@model IEnumerable<SubCatalogueViewModel>
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var counter = 1;
+}
+<br />
+<br />
+<h3 id="plot-heading" class="inlineElement">All Catalogue Stock</h3>
+<button type="button" class="btn btn-primary inlineElement floatRight" onclick="ModelOpen('SendMail')">Email Supplier</button>
+<br />
+<br />
+<table id="table-allstock">
+    <thead>
+        <tr>
+            <th>No.</th>
+            <th>Catalogue</th>
+            <th>Sub Catalogue</th>
+            <th>Stock</th>
+            <th>Options</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@counter</td>
+                <td>@item.Catalogue.Name</td>
+                <td>@item.Name</td>
+                <td>@item.Quantity</td>
+                <td>
+                    <button type="button" class="btn btn-sm btn-outline-primary" onclick="OpenStock('@item.Id','@item.Quantity', '@item.CatalogueId')">Update Stock</button>
+                </td>
+            </tr>
+            counter++;
+        }
+    </tbody>
+</table>
+
+
+<!-- Modal for Stock Sub Catalogue -->
+<div class="modal fade" id="StockSubCatalogueModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="StockSubCatalogueModalTitle">Udpate Stock</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="ModelClose('StockSubCatalogue')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Quantity</label>
+                    <input type="number" class="form-control" id="stockSubCataloguePriceInputElement" min="0" placeholder="Enter quantity">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="ModelClose('StockSubCatalogue')">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="UpdateStockSubCatalogue()">Save</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Add Plot Type -->
+
+<div class="modal fade" id="SendMailModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="SendMailModalTitle">Email Supplier</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="ModelClose('SendMail')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" class="form-control" id="emailInputElement" placeholder="Enter email">
+                </div>
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" class="form-control" id="titleInputElement" placeholder="Enter title">
+                </div>
+                <div class="form-group">
+                    <label>Message</label>
+                    <textarea class="form-control" id="messageInputElement" placeholder="Enter message"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="spinner-border text-primary" role="status" id="spinner" style="display:none;">
+                    <span class="sr-only"></span>
+                </div>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="ModelClose('SendMail')">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="SendMail()">Send</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var catalogueId = "";
+
+    var sub = "";
+    function ModelOpen(type) {
+        $('#' + type + 'Modal').modal('show');
+    }
+
+    function ModelClose(type) {
+        $('#' + type + 'Modal').modal('hide');
+    }
+
+    function SendMail() {
+        var email = $('#emailInputElement').val();
+        var title = $('#titleInputElement').val();
+        var message = $('#messageInputElement').val();
+        $.ajax(
+            {
+                type: "POST",
+                url: "EmailSupplier",
+                data: {
+                    email: email,
+                    title: title,
+                    message: message
+                },
+                beforeSend: function () {
+                    $('#spinner').show();
+                },
+                success: function (result) {
+                    if (result == true) {
+                        $('#spinner').hide();
+                        ModelClose('SendMail');
+                        Swal.fire(
+                            'Success!',
+                            'Supplier Email Sent!',
+                            'success'
+                        ).then(function () {
+                            window.location.href = "/Admin/AllCataloguesStock";
+                        });
+                    }
+                    else{
+                        $('#spinner').hide();
+                        Swal.fire(
+                            'Error!',
+                            'Please check the values entered!',
+                            'error'
+                        ).then(function () {
+                            //window.location.href = "/Admin/ManageSubCatalogues/" + catalogueId;
+                        });
+                    }
+                }
+
+            });
+    }
+
+    function OpenStock(id, qty, catId) {
+        $('#stockSubCataloguePriceInputElement').val(qty);
+        ModelOpen('StockSubCatalogue');
+        catalogueId = catId;
+        sub = id;
+
+    }
+
+    function UpdateStockSubCatalogue() {
+        var qty = $('#stockSubCataloguePriceInputElement').val();
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("UpdateStockSubCatalogue","Admin")',
+            data: {
+                catalogueId: catalogueId,
+                subcatalogueId: sub,
+                qty: qty
+            },
+            success: function (result) {
+                if (result == true) {
+                    ModelClose('StockSubCatalogue');
+                    Swal.fire(
+                        'Success!',
+                        'Stock Updated!',
+                        'success'
+                    ).then(function () {
+                        window.location.href = "/Admin/AllCataloguesStock/";
+                    });
+                }
+            }
+
+        });
+    }
+
+
+    $(document).ready(function () {
+        $('#table-allstock').DataTable();
+        SetMenuHighlight("admin-panel");
+    });
+
+</script>

@@ -1,0 +1,219 @@
+is_global = true
+build_property.TargetFramework = net6.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = ChoicesExtrasManagement
+build_property.RootNamespace = ChoicesExtrasManagement
+build_property.ProjectDir = C:\Users\mutya\Documents\Mutyala FInal Year Project\code\trunk\Code\ChoicesExtrasManagement\ChoicesExtrasManagement\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 6.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\mutya\Documents\Mutyala FInal Year Project\code\trunk\Code\ChoicesExtrasManagement\ChoicesExtrasManagement
+build_property._RazorSourceGeneratorDebug = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Account/AccessDenied.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxBY2Nlc3NEZW5pZWQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Account/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxMb2dpbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Account/Register.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxSZWdpc3Rlci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Admin/AllCataloguesStock.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQWxsQ2F0YWxvZ3Vlc1N0b2NrLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Admin/AllOrders.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQWxsT3JkZXJzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Admin/BuyerOrders.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQnV5ZXJPcmRlcnMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Admin/BuyerPlots.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQnV5ZXJQbG90cy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Admin/ChoicesExtras.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQ2hvaWNlc0V4dHJhcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Admin/Dashboard.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRGFzaGJvYXJkLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Admin/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Admin/ManageCatalogues.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cTWFuYWdlQ2F0YWxvZ3Vlcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Admin/ManageChoices.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cTWFuYWdlQ2hvaWNlcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Admin/ManageChoicesExtras.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cTWFuYWdlQ2hvaWNlc0V4dHJhcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Admin/ManageExtras.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cTWFuYWdlRXh0cmFzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Admin/ManageLocations.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cTWFuYWdlTG9jYXRpb25zLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Admin/ManagePlotTypes.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cTWFuYWdlUGxvdFR5cGVzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Admin/ManageProjects.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cTWFuYWdlUHJvamVjdHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Admin/ManageRooms.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cTWFuYWdlUm9vbXMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Admin/ManageSubCatalogues.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cTWFuYWdlU3ViQ2F0YWxvZ3Vlcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Admin/ManageSubChoices.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cTWFuYWdlU3ViQ2hvaWNlcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Admin/ManageSubExtras.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cTWFuYWdlU3ViRXh0cmFzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Admin/MapChoicesExtras.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cTWFwQ2hvaWNlc0V4dHJhcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Admin/ViewBuyers.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cVmlld0J1eWVycy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Home/About.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxBYm91dC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Home/Contact.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxDb250YWN0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Home/Privacy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Payment/Cancel.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGF5bWVudFxDYW5jZWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Payment/Success.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGF5bWVudFxTdWNjZXNzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Plot/ChoicesExtras.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxvdFxDaG9pY2VzRXh0cmFzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Plot/Detail.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxvdFxEZXRhaWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Plot/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxvdFxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Plot/ManageMyPlot.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxvdFxNYW5hZ2VNeVBsb3QuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Plot/MyChoices.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxvdFxNeUNob2ljZXMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Plot/MyChoicesExtras.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxvdFxNeUNob2ljZXNFeHRyYXMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Plot/MyExtras.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxvdFxNeUV4dHJhcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Plot/MyInvoice.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxvdFxNeUludm9pY2UuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Plot/PlotNotifications.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxvdFxQbG90Tm90aWZpY2F0aW9ucy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Plot/PlotOrders.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxvdFxQbG90T3JkZXJzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Plot/PlotOverview.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxvdFxQbG90T3ZlcnZpZXcuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Project/Detail.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvamVjdFxEZXRhaWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Project/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvamVjdFxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Shared/_AdminSideNav.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9BZG1pblNpZGVOYXYuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Shared/_MainSideNav.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9NYWluU2lkZU5hdi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Shared/_UserSideNav.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Vc2VyU2lkZU5hdi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mutya/Documents/Mutyala FInal Year Project/code/trunk/Code/ChoicesExtrasManagement/ChoicesExtrasManagement/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-nfm6eaq9af

@@ -1,0 +1,97 @@
+﻿@using ChoicesExtrasManagement.ViewModels;
+@model IEnumerable<SubCatalogueViewModel>
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var counter = 1;
+}
+<a asp-controller="Admin" asp-action="ManageChoices" type="button" class="btn btn-sm btn-outline-primary"> Back to All Choices</a>
+<br />
+<br />
+<h3 id="plot-heading" class="inlineElement">Sub Choices for @ViewBag.choiceName</h3>
+<button type="button" class="btn btn-primary inlineElement floatRight" onclick="ModelOpen('AddSubChoice')">Add Sub Choice</button>
+<br />
+<br />
+<table id="table-subchoices">
+    <thead>
+        <tr>
+            <th>No.</th>
+            <th>Name</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@counter</td>
+                <td>@item.Name</td>
+                <td>@item.Price</td>
+            </tr>
+            counter++;
+        }
+    </tbody>
+</table>
+
+<!-- Modal for Add Sub Choice -->
+<div class="modal fade" id="AddSubChoiceModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="AddSubChoiceModalTitle">Add Sub Choice</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="ModelClose('AddSubChoice')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" class="form-control" id="subChoiceNameInputElement" placeholder="Enter name">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="ModelClose('AddSubChoice')">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="AddSubChoice()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function ModelOpen(type) {
+        $('#' + type + 'Modal').modal('show');
+    }
+
+    function ModelClose(type) {
+        $('#' + type + 'Modal').modal('hide');
+    }
+
+    function AddSubChoice() {
+        var subChoiceName = $('#subChoiceNameInputElement').val();
+        var choiceId = parseInt(@ViewBag.choiceId)
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("AddSubChoice","Admin")',
+            data: {
+                choiceId: choiceId,
+                subChoiceName: subChoiceName
+            },
+            success: function (result) {
+                if (result == true) {
+                    ModelClose('AddSubChoice');
+                    window.location.href = "/Admin/ManageSubChoices/" + choiceId;
+                }
+            }
+
+        });
+    }
+
+    
+
+    $(document).ready(function () {
+        $('#table-subchoices').DataTable();
+    });
+
+</script>

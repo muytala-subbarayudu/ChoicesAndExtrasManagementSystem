@@ -1,0 +1,49 @@
+﻿@using ChoicesExtrasManagement.ViewModels;
+@model LoginViewModel
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Login";
+}
+
+<br />
+<br />
+<div class="row">
+    <div class="col-md-6 offset-3">
+        <div class="row">
+            <div class="col-md-8 offset-2">
+                <h3>Login</h3>
+            </div>
+            <div class="col-md-8 offset-2">
+                @if (TempData["Error"] != null)
+                {
+                    <div class="col-md-12 alert alert-danger">
+                        <span><b>Sorry!</b> - @TempData["Error"]</span>
+                    </div>
+                }
+            </div>
+            <div class="col-md-8 offset-2">
+                <form asp-action="Login">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="UserEmail" class="control-label"></label>
+                        <input asp-for="UserEmail" class="form-control">
+                        <span asp-validation-for="UserEmail" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Password" class="control-label"></label>
+                        <input asp-for="Password" class="form-control" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div><br/></div>
+                    <div class="form-group">
+                        <input class="btn btn-primary float right form-control" type="submit" value="Log in" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+

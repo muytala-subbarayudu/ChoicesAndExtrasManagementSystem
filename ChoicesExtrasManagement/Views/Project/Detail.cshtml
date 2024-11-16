@@ -1,0 +1,107 @@
+﻿@using ChoicesExtrasManagement.ViewModels;
+@model ProjectPlotsViewModel
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var counter = 1;
+}
+
+<style>
+    #sold {
+        font-weight: bold;
+        color: maroon;
+    }
+
+    #available {
+        font-weight: bold;
+        color: darkolivegreen;
+        cursor:pointer;
+        text-decoration: underline;
+    }
+</style>
+
+<!-- Page Content -->
+<div class="container">
+
+    <!-- Portfolio Item Heading -->
+    <h1 class="my-4">
+        @Model.Name
+    </h1>
+
+    <!-- Portfolio Item Row -->
+    <div class="row">
+
+        <div class="col-md-4">
+            <img src="~/assets/images/projects.jpg" width="100%" height="225" alt="">
+        </div>
+
+        <div class="col-md-4">
+            <h3 class="my-3">Description</h3>
+            <p>@Model.Description</p>
+            <h3 class="my-3">Location</h3>
+            <p>@Model.Location.Name</p>
+        </div>
+
+    </div>
+    <!-- /.row -->
+    <!-- Related Projects Row -->
+    <h3 class="my-4">Associated Plots</h3>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-5 g-3">
+        @if (Model.PlotsList.Count() == 0)
+        {
+            <div class="col">
+                <br /><br />
+                <p>No Associated Plots</p>
+            </div>
+        }
+        else
+        {
+            @foreach (var item in Model.PlotsList)
+            {
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <img class="bd-placeholder-img card-img-top" width="100%" height="200" style="object-fit:fill;" src="~/assets/images/home-image.jpg" />
+                        <div class="card-body">
+                            <p class="card-text">Plot @counter</p>
+                            <p class="card-text">PL @item.Id - <b>@item.PlotType.Name</b></p>
+                            <p class="card-text">@item.PlotType.Description</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <a asp-controller="Plot" asp-action="Detail" asp-route-id="@item.Id" type="button" class="btn btn-sm btn-outline-secondary">View</a>
+                                </div>
+                                <small class="text-body-secondary">£ @item.PlotType.Amount.ToString("N0")</small>
+                            </div>
+                            <hr>
+                            @if (item.AppUserId != null)
+                            {
+                                <p id="sold">Sold Out</p>
+                            }
+                            else
+                            {
+                                <p id="available" onclick="loadContactUs()">Available, Contact Us.</p>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+                counter++;
+            }
+        }
+
+    </div>
+    <!-- /.row -->
+
+</div>
+<!-- /.container -->
+
+<script>
+    function loadContactUs(){
+         window.location.href = '@Url.Action("Contact", "Home")';
+    }
+
+    $(document).ready(function () {
+        SetMenuHighlight("all-projects");
+    });
+</script>

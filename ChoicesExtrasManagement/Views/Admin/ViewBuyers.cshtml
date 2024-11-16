@@ -1,0 +1,90 @@
+﻿@using ChoicesExtrasManagement.ViewModels;
+@model IEnumerable<AppUserVM>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var counter = 1;
+}
+
+<h3 id="plot-heading" class="inlineElement">Manage Buyers</h3>
+<br />
+<br />
+<table id="table-buyers">
+    <thead>
+        <tr>
+            <th>No.</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone Number</th>
+            <th>Plots Count</th>
+            <th>Options</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@counter</td>
+                <td>@item.Name</td>
+                <td>@item.Email</td>
+                <td>@item.Phone</td>
+                <td>@item.PlotCount</td>
+                <td>
+                    @*<button class="btn btn-sm btn-outline-primary">Edit</button>*@
+                    @if (item.PlotCount == 0)
+                    {
+                        <button class="btn btn-sm btn-outline-primary" onclick="DeleteBuyer('@item.Id')">Delete</button>
+                    }
+                    else
+                    {
+                        <a asp-controller="Admin" asp-action="BuyerPlots" asp-route-buyerid="@item.Id" type="button" class="btn btn-sm btn-outline-primary">View Plots</a>
+                    }
+                </td>
+            </tr>
+            counter++;
+        }
+    </tbody>
+</table>
+
+<script type="text/javascript">
+
+    function DeleteBuyer(id){
+
+        $.ajax(
+            {
+                type: "POST",
+                url: "DeleteBuyer",
+                data: {
+                    buyerid: id
+                },
+                success: function (result) {
+                    if (result == true) {
+                        Swal.fire(
+                            'Success!',
+                            'Buyer Deleted!',
+                            'success'
+                        ).then(function(){
+                            window.location.href = "/Admin/ViewBuyers";
+                        });
+                        
+                    }
+                }
+
+            });
+
+    }
+
+    function EditBuyer() {
+
+    }
+   
+    $(document).ready(function () {
+        $('#table-buyers').DataTable();
+        SetMenuHighlight("admin-panel");
+    });
+
+
+</script>
+
+

@@ -1,0 +1,63 @@
+﻿@model Plot
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<style>
+    .offcanvas-backdrop {
+        pointer-events: none !important
+    }
+
+</style>
+<div>
+    <a asp-controller="Plot" asp-action="Index" type="button" class="btn btn-sm btn-outline-primary"> < Back to My Plots</a>&nbsp;&nbsp;&nbsp;
+    <h4 style="display:inline-block;vertical-align:sub;">Plot at @Model.Project.Name, @Model.Project.Location.Name</h4>
+</div>
+
+<hr />
+
+<ul class="nav nav-pills nav-fill bg-light p-4 rounded userNavMenu">
+    <li class="nav-item">
+        <a asp-controller="Plot" asp-action="PlotOverview" asp-route-id="@Model.Id" class="nav-link active">Plot Overview</a>
+    </li>
+    <li class="nav-item">
+        <a asp-controller="Plot" asp-action="MyChoicesExtras" asp-route-id="@Model.Id" class="nav-link">Manage Choices and Extras</a>
+    </li>
+    <li class="nav-item">
+        <a asp-controller="Plot" asp-action="PlotOrders" asp-route-id="@Model.Id" class="nav-link">Orders & Invoices</a>
+
+    </li>
+    <li class="nav-item">
+        <a asp-controller="Plot" asp-action="PlotNotifications" asp-route-id="@Model.Id" class="nav-link">Notifications</a>
+    </li>
+</ul>
+<br />
+<div class="row" style="padding:10px;">
+    <div id="bodySection" style="height: 60vh; background:white;margin-right:5px;padding:15px;">
+        <p>Current Progress - Next Steps</p>
+        <p>Budget Set</p>
+        <p>Outstaning Amount to Pay</p>
+        <p>Fix my Choices and Extras</p>
+        <h5>Pay Outstanding Amount : £--</h5>
+        <a data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom" type="button" class="btn btn-sm btn-outline-primary">Review Changes Pay Now</a>
+    </div>
+</div>
+
+<div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel" style="height:80vh;">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasBottomLabel">Quick View</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body small">
+        <h5>Choices and Extras for Review</h5>
+        <br />
+        <a asp-controller="Payment" asp-action="CheckOut" type="button" class="btn btn-sm btn-outline-primary">Pay Now</a>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        SetMenuHighlight("plot-manager");
+    });
+</script>
